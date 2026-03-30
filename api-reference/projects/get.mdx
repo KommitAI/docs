@@ -1,0 +1,29 @@
+---
+title: "Get project"
+description: "Retrieve a single project by ID."
+api: "GET /v1/projects/{id}"
+---
+
+<ParamField path="id" type="string" required>
+  Project UUID.
+</ParamField>
+
+<CodeGroup>
+```bash Request
+curl https://api.getkommit.ai/v1/projects/a1b2c3d4-e5f6-7890-abcd-ef1234567890 \
+  -H "Authorization: Bearer km_your_api_key"
+```
+
+```json Response
+{
+  "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "name": "Mobile App Redesign",
+  "description": "Complete redesign of the iOS and Android apps",
+  "status": "active",
+  "templateSlug": null,
+  "createdBy": "usr_abc123",
+  "createdAt": "2025-03-15T10:30:00Z",
+  "updatedAt": "2025-03-20T14:22:00Z"
+}
+```
+</CodeGroup>

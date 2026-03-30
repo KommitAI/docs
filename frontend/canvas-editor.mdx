@@ -1,0 +1,48 @@
+---
+title: "Canvas editor"
+description: "Architecture of the XYFlow-based visual project editor."
+---
+
+The canvas editor is the central UI for defining project specifications. It's built on [XYFlow](https://xyflow.com/) (formerly React Flow) and uses the Zustand canvas store for state management.
+
+## Component hierarchy
+
+```
+ProjectCanvas
+├── CanvasToolbar        # Node creation, zoom, layout controls
+├── XYFlow               # The interactive graph
+│   ├── Custom nodes     # Feature, data model, user flow nodes
+│   └── Custom edges     # Dependency, composition connections
+├── NodeEditPopover      # Inline editing for selected node
+├── NodeChat             # AI chat panel for selected node
+├── ReadinessCard        # Project completion status
+└── RepoPickerDialog     # GitHub repo connection
+```
+
+## Data flow
+
+1. **User interacts** with the canvas (drag node, create edge, edit data)
+2. **Canvas store** updates immediately for responsive UI
+3. **Debounced API sync** sends changes to the server
+4. **Dirty tracking** marks unsaved state and syncs on save
+
+```
+User action → Zustand store → Immediate UI update
+                            → Debounced API call → Server
+```
+
+## Custom node types
+
+Each node type renders differently based on its `nodeType` field. All nodes share the same data model (title, structured data, position, size) but display different structured data fields.
+
+## Edge management
+
+Edges are created by dragging from a node handle. The handle position (top, bottom, left, right) determines where the connection visually attaches. Edge type labels describe the relationship (dependency, composition, data flow).
+
+## Asset management
+
+Nodes can hold attached assets organized into folders. The `AssetLightbox` component provides preview for images and design files. Figma links open in an embedded viewer.
+
+## Auto-layout
+
+The toolbar includes an auto-layout action powered by [Dagre](https://github.com/dagrejs/dagre), which arranges nodes in a hierarchical layout based on their edge connections.

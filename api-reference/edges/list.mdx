@@ -1,0 +1,46 @@
+---
+title: "List edges"
+description: "Retrieve all edges (connections) in a project."
+api: "GET /v1/projects/{projectId}/edges"
+---
+
+<ParamField path="projectId" type="string" required>
+  Project UUID.
+</ParamField>
+
+<ResponseField name="data" type="array">
+  <Expandable title="Edge object">
+    <ResponseField name="id" type="string" required>UUID</ResponseField>
+    <ResponseField name="sourceNodeId" type="string" required>Source node UUID</ResponseField>
+    <ResponseField name="targetNodeId" type="string" required>Target node UUID</ResponseField>
+    <ResponseField name="sourceCardId" type="string">Optional card ID within source node</ResponseField>
+    <ResponseField name="targetCardId" type="string">Optional card ID within target node</ResponseField>
+    <ResponseField name="sourceHandle" type="string" required>One of `top`, `bottom`, `left`, `right`</ResponseField>
+    <ResponseField name="targetHandle" type="string" required>One of `top`, `bottom`, `left`, `right`</ResponseField>
+    <ResponseField name="edgeType" type="string">Custom edge type</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<CodeGroup>
+```bash Request
+curl https://api.getkommit.ai/v1/projects/a1b2c3d4-e5f6-7890-abcd-ef1234567890/edges \
+  -H "Authorization: Bearer km_your_api_key"
+```
+
+```json Response
+{
+  "data": [
+    {
+      "id": "e1a2b3c4-d5e6-7890-abcd-ef1234567890",
+      "sourceNodeId": "n1a2b3c4-d5e6-7890-abcd-ef1234567890",
+      "targetNodeId": "n2b3c4d5-e6f7-8901-bcde-f23456789012",
+      "sourceCardId": null,
+      "targetCardId": null,
+      "sourceHandle": "bottom",
+      "targetHandle": "top",
+      "edgeType": "dependency"
+    }
+  ]
+}
+```
+</CodeGroup>

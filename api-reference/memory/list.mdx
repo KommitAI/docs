@@ -1,0 +1,66 @@
+---
+title: "List memories"
+description: "Retrieve paginated memories for a project, with optional search and filtering."
+api: "GET /v1/projects/{projectId}/memory"
+---
+
+<ParamField path="projectId" type="string" required>Project UUID.</ParamField>
+
+<ParamField query="q" type="string">
+  Search query. Uses semantic similarity matching via vector embeddings.
+</ParamField>
+
+<ParamField query="category" type="string">
+  Filter by category. One of `decision`, `learning`, `progress`, `preference`.
+</ParamField>
+
+<ParamField query="status" type="string">
+  Filter by status. One of `active`, `superseded`, `conflicting`, `archived`.
+</ParamField>
+
+<ParamField query="cursor" type="string">Pagination cursor.</ParamField>
+<ParamField query="limit" type="number" default="20">Items per page (1-100).</ParamField>
+
+<ResponseField name="data" type="array">
+  <Expandable title="Memory object">
+    <ResponseField name="id" type="string" required>UUID</ResponseField>
+    <ResponseField name="content" type="string" required>Memory content (1-10,000 chars)</ResponseField>
+    <ResponseField name="category" type="string">decision, learning, progress, or preference</ResponseField>
+    <ResponseField name="summary" type="string">Auto-generated summary</ResponseField>
+    <ResponseField name="status" type="string" required>active, superseded, conflicting, or archived</ResponseField>
+    <ResponseField name="linkedNodeIds" type="array">Associated node UUIDs</ResponseField>
+    <ResponseField name="entities" type="array">Extracted entities</ResponseField>
+    <ResponseField name="confidence" type="number">Confidence score</ResponseField>
+    <ResponseField name="createdAt" type="string" required>ISO 8601</ResponseField>
+    <ResponseField name="updatedAt" type="string" required>ISO 8601</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="nextCursor" type="string" />
+
+<CodeGroup>
+```bash Request
+curl "https://api.getkommit.ai/v1/projects/a1b2c3d4-e5f6-7890-abcd-ef1234567890/memory?category=decision&limit=5" \
+  -H "Authorization: Bearer km_your_api_key"
+```
+
+```json Response
+{
+  "data": [
+    {
+      "id": "m1a2b3c4-d5e6-7890-abcd-ef1234567890",
+      "content": "Use PostgreSQL with Drizzle ORM instead of Prisma. Drizzle has better edge runtime support and the SQL-like API fits the team's preferences.",
+      "category": "decision",
+      "summary": "Chose Drizzle ORM over Prisma for edge runtime support",
+      "status": "active",
+      "linkedNodeIds": ["n1a2b3c4-d5e6-7890-abcd-ef1234567890"],
+      "entities": ["PostgreSQL", "Drizzle", "Prisma"],
+      "confidence": 0.95,
+      "createdAt": "2025-03-15T10:30:00Z",
+      "updatedAt": "2025-03-15T10:30:00Z"
+    }
+  ],
+  "nextCursor": null
+}
+```
+</CodeGroup>

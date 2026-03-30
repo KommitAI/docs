@@ -1,0 +1,41 @@
+---
+title: "Get conversations"
+description: "Retrieve the conversation history for a node's chat."
+api: "GET /v1/projects/{projectId}/nodes/{nodeId}/chat/conversations"
+---
+
+<ParamField path="projectId" type="string" required>Project UUID.</ParamField>
+<ParamField path="nodeId" type="string" required>Node UUID.</ParamField>
+
+Each node has at most one conversation. The response includes all messages in chronological order.
+
+<CodeGroup>
+```bash Request
+curl https://api.getkommit.ai/v1/projects/a1b2c3d4-e5f6-7890-abcd-ef1234567890/nodes/n1a2b3c4-d5e6-7890-abcd-ef1234567890/chat/conversations \
+  -H "Authorization: Bearer km_your_api_key"
+```
+
+```json Response
+{
+  "data": {
+    "id": "conv_a1b2c3d4",
+    "nodeId": "n1a2b3c4-d5e6-7890-abcd-ef1234567890",
+    "messages": [
+      {
+        "id": "msg_001",
+        "role": "user",
+        "content": "What acceptance criteria should this feature have?",
+        "createdAt": "2025-03-25T09:00:00Z"
+      },
+      {
+        "id": "msg_002",
+        "role": "assistant",
+        "content": "Based on the feature spec, here are the recommended acceptance criteria:\n\n1. Users can sign up with a valid email...",
+        "tokenCount": 245,
+        "createdAt": "2025-03-25T09:00:05Z"
+      }
+    ]
+  }
+}
+```
+</CodeGroup>

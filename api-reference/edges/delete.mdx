@@ -1,0 +1,21 @@
+---
+title: "Delete edge"
+description: "Remove a connection between nodes."
+api: "DELETE /v1/projects/{projectId}/edges/{edgeId}"
+---
+
+<ParamField path="projectId" type="string" required>Project UUID.</ParamField>
+<ParamField path="edgeId" type="string" required>Edge UUID.</ParamField>
+
+<CodeGroup>
+```bash Request
+curl -X DELETE https://api.getkommit.ai/v1/projects/a1b2c3d4-e5f6-7890-abcd-ef1234567890/edges/e1a2b3c4-d5e6-7890-abcd-ef1234567890 \
+  -H "Authorization: Bearer km_your_api_key"
+```
+
+```json Response
+{
+  "success": true
+}
+```
+</CodeGroup>

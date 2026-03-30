@@ -1,0 +1,56 @@
+---
+title: "List nodes"
+description: "Retrieve all nodes in a project."
+api: "GET /v1/projects/{projectId}/nodes"
+---
+
+<ParamField path="projectId" type="string" required>
+  Project UUID.
+</ParamField>
+
+<ResponseField name="data" type="array">
+  <Expandable title="Node object">
+    <ResponseField name="id" type="string" required>UUID</ResponseField>
+    <ResponseField name="nodeType" type="string" required>Node type (e.g., feature, data-model)</ResponseField>
+    <ResponseField name="title" type="string" required />
+    <ResponseField name="structuredData" type="object" required>Flexible JSON data for the node</ResponseField>
+    <ResponseField name="positionX" type="number" required>X position on canvas</ResponseField>
+    <ResponseField name="positionY" type="number" required>Y position on canvas</ResponseField>
+    <ResponseField name="width" type="number" required />
+    <ResponseField name="height" type="number" required />
+    <ResponseField name="collapsed" type="boolean" required />
+    <ResponseField name="createdAt" type="string" required>ISO 8601</ResponseField>
+    <ResponseField name="updatedAt" type="string" required>ISO 8601</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<CodeGroup>
+```bash Request
+curl https://api.getkommit.ai/v1/projects/a1b2c3d4-e5f6-7890-abcd-ef1234567890/nodes \
+  -H "Authorization: Bearer km_your_api_key"
+```
+
+```json Response
+{
+  "data": [
+    {
+      "id": "n1a2b3c4-d5e6-7890-abcd-ef1234567890",
+      "nodeType": "feature",
+      "title": "User authentication",
+      "structuredData": {
+        "description": "Email/password and GitHub OAuth sign-in",
+        "priority": "high",
+        "acceptanceCriteria": ["Users can sign up with email", "Users can sign in with GitHub"]
+      },
+      "positionX": 100,
+      "positionY": 200,
+      "width": 280,
+      "height": 180,
+      "collapsed": false,
+      "createdAt": "2025-03-15T10:30:00Z",
+      "updatedAt": "2025-03-18T09:15:00Z"
+    }
+  ]
+}
+```
+</CodeGroup>

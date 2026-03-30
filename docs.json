@@ -1,11 +1,11 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "Kommit",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#6366F1",
+    "light": "#818CF8",
+    "dark": "#4F46E5"
   },
   "favicon": "/favicon.svg",
   "navigation": {
@@ -18,31 +18,24 @@
             "pages": [
               "index",
               "quickstart",
-              "development"
+              "concepts"
             ]
           },
           {
-            "group": "Customization",
+            "group": "Features",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "features/canvas",
+              "features/memory",
+              "features/prd-generation",
+              "features/integrations",
+              "features/feedback-portal"
             ]
           },
           {
-            "group": "Writing content",
+            "group": "MCP",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
-            ]
-          },
-          {
-            "group": "AI tools",
-            "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "mcp/overview",
+              "mcp/setup"
             ]
           }
         ]
@@ -51,18 +44,101 @@
         "tab": "API reference",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Overview",
             "pages": [
-              "api-reference/introduction"
+              "api-reference/introduction",
+              "api-reference/authentication"
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "Projects",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "api-reference/projects/list",
+              "api-reference/projects/create",
+              "api-reference/projects/get",
+              "api-reference/projects/update",
+              "api-reference/projects/delete"
+            ]
+          },
+          {
+            "group": "Nodes",
+            "pages": [
+              "api-reference/nodes/list",
+              "api-reference/nodes/upsert",
+              "api-reference/nodes/update",
+              "api-reference/nodes/delete"
+            ]
+          },
+          {
+            "group": "Edges",
+            "pages": [
+              "api-reference/edges/list",
+              "api-reference/edges/create",
+              "api-reference/edges/update",
+              "api-reference/edges/delete"
+            ]
+          },
+          {
+            "group": "Memory",
+            "pages": [
+              "api-reference/memory/list",
+              "api-reference/memory/create",
+              "api-reference/memory/update",
+              "api-reference/memory/delete",
+              "api-reference/memory/search",
+              "api-reference/memory/conflicts"
+            ]
+          },
+          {
+            "group": "Chat",
+            "pages": [
+              "api-reference/chat/send-message",
+              "api-reference/chat/get-conversations"
+            ]
+          },
+          {
+            "group": "Templates",
+            "pages": [
+              "api-reference/templates/list",
+              "api-reference/templates/get"
+            ]
+          },
+          {
+            "group": "PRD",
+            "pages": [
+              "api-reference/prd/list",
+              "api-reference/prd/get",
+              "api-reference/prd/generate",
+              "api-reference/prd/refine"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Frontend",
+        "groups": [
+          {
+            "group": "Architecture",
+            "pages": [
+              "frontend/overview",
+              "frontend/project-structure",
+              "frontend/tech-stack"
+            ]
+          },
+          {
+            "group": "Core systems",
+            "pages": [
+              "frontend/authentication",
+              "frontend/state-management",
+              "frontend/data-fetching"
+            ]
+          },
+          {
+            "group": "Key components",
+            "pages": [
+              "frontend/canvas-editor",
+              "frontend/memory-system",
+              "frontend/prd-workflow"
             ]
           }
         ]
@@ -71,14 +147,9 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "GitHub",
+          "href": "https://github.com/KommitAI",
+          "icon": "github"
         }
       ]
     }
@@ -91,32 +162,28 @@
     "links": [
       {
         "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "href": "mailto:support@getkommit.ai"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "href": "https://getkommit.ai/dashboard"
     }
   },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+      "copy",
+      "view",
+      "claude",
+      "cursor",
+      "vscode"
+    ]
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "github": "https://github.com/KommitAI",
+      "x": "https://x.com/getkommit"
     }
   }
 }

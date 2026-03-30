@@ -1,0 +1,42 @@
+---
+title: "Create project"
+description: "Create a new project in your organization."
+api: "POST /v1/projects"
+---
+
+<ParamField body="name" type="string" required>
+  Project name (1-200 characters).
+</ParamField>
+
+<ParamField body="description" type="string">
+  Project description (max 2,000 characters).
+</ParamField>
+
+<ParamField body="templateSlug" type="string">
+  Apply a template to pre-populate the canvas. Use a slug from the [templates list](/api-reference/templates/list).
+</ParamField>
+
+<CodeGroup>
+```bash Request
+curl -X POST https://api.getkommit.ai/v1/projects \
+  -H "Authorization: Bearer km_your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Payment System",
+    "description": "Stripe integration for subscription billing"
+  }'
+```
+
+```json Response
+{
+  "id": "b2c3d4e5-f6a7-8901-bcde-f23456789012",
+  "name": "Payment System",
+  "description": "Stripe integration for subscription billing",
+  "status": "active",
+  "templateSlug": null,
+  "createdBy": "usr_abc123",
+  "createdAt": "2025-03-25T09:00:00Z",
+  "updatedAt": "2025-03-25T09:00:00Z"
+}
+```
+</CodeGroup>

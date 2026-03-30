@@ -1,0 +1,56 @@
+---
+title: "Project structure"
+description: "Directory layout and organization conventions for the Kommit frontend."
+---
+
+```
+src/
+├── app/                        # Next.js App Router
+│   ├── (auth)/                 # Auth pages (sign-in, sign-up, forgot-password)
+│   ├── (dashboard)/            # Protected dashboard pages
+│   │   ├── dashboard/          # Project list
+│   │   ├── project/[projectId]/ # Project workspace (canvas, PRD, details)
+│   │   ├── memory/             # Global memory management
+│   │   ├── integrations/       # Integration connectors
+│   │   ├── settings/           # Account, billing, security
+│   │   ├── templates/          # Template library
+│   │   └── admin/              # Admin dashboard
+│   └── api/                    # REST API routes (100+ endpoints)
+├── components/                 # React components (200+ files)
+│   ├── canvas/                 # XYFlow project editor
+│   ├── dashboard/              # Dashboard UI
+│   ├── memory/                 # Memory table, graph, conflicts
+│   ├── prd/                    # PRD generation and refinement
+│   ├── feedback/               # Feedback portal
+│   ├── integrations/           # Integration UIs
+│   ├── admin/                  # Admin tools
+│   ├── settings/               # Settings forms
+│   └── ui/                     # shadcn/ui base components (30+)
+├── stores/                     # Zustand state stores
+│   ├── canvas-store.ts         # Nodes, edges, selection, viewport
+│   ├── view-store.ts           # Tabs, filters, sorting
+│   └── codebase-map-store.ts   # Repository visualization
+├── lib/                        # Shared utilities and business logic
+│   ├── db/                     # Drizzle ORM schemas and queries
+│   ├── api/                    # API client utilities
+│   ├── agent/                  # AI agent tool definitions
+│   ├── github/                 # GitHub App integration
+│   ├── pm/                     # Linear, Jira, Notion integrations
+│   ├── memory/                 # Memory system logic
+│   ├── auth.ts                 # Better Auth configuration
+│   └── stripe.ts               # Stripe client setup
+├── hooks/                      # Custom React hooks
+├── types/                      # TypeScript type definitions
+├── middleware.ts                # Auth and routing middleware
+└── globals.css                 # Global styles and CSS variables
+```
+
+## Organization conventions
+
+**Route groups** — `(auth)` and `(dashboard)` separate public and protected pages. The grouping doesn't affect URLs.
+
+**Feature-based components** — components are grouped by feature domain (canvas, memory, prd) rather than by type (buttons, forms). The `ui/` directory holds shared primitives from shadcn/ui.
+
+**Lib for shared logic** — business logic, API clients, and integration code live in `lib/`, organized by domain. Components import from `lib/` for data operations.
+
+**Stores for UI state** — Zustand stores handle state that changes rapidly (canvas interactions, view filters). Server-derived data uses SWR instead.

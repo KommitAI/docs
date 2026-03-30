@@ -1,0 +1,44 @@
+---
+title: "Core concepts"
+description: "Understand the building blocks of Kommit: projects, nodes, edges, memory, and organizations."
+---
+
+<AccordionGroup>
+  <Accordion title="Projects">
+    A project is the top-level container for a piece of software you're specifying. Each project has its own canvas, memory store, PRD history, and integrations.
+
+    Projects belong to an organization and can be **active** or **archived**. Deleting a project is a soft delete — it can be restored.
+  </Accordion>
+
+  <Accordion title="Nodes">
+    Nodes are the items on your project canvas. Each node has a **type** (feature, data model, user flow, etc.), a **title**, and **structured data** — a flexible JSON object that holds the node's details.
+
+    Nodes also have position and size on the canvas, and can be collapsed to save space.
+  </Accordion>
+
+  <Accordion title="Edges">
+    Edges are connections between nodes. They represent relationships — a feature depends on a data model, a user flow includes a feature, etc.
+
+    Each edge has a source node, target node, and handle positions (top, bottom, left, right) that control where the connection attaches visually.
+  </Accordion>
+
+  <Accordion title="Memory">
+    Memories are pieces of context stored per project — decisions you've made, things you've learned, progress updates, and preferences. Each memory has a **category** and a **status**.
+
+    Memories are embedded as vectors using pgvector, enabling semantic search. When AI coding tools connect via MCP, they search these memories to understand your project context.
+
+    Kommit detects **conflicts** when new memories contradict existing ones, and prompts you to resolve them.
+  </Accordion>
+
+  <Accordion title="Templates">
+    Templates are reusable project configurations. When you create a new project, you can apply a template to pre-populate the canvas with a standard set of nodes and structure.
+
+    Admins manage the template library for the organization.
+  </Accordion>
+
+  <Accordion title="Organizations">
+    Organizations are the multi-tenant boundary in Kommit. Each org has its own projects, members, billing, and integrations.
+
+    Members can have one of three roles: **owner**, **admin**, or **member**. Row-level security ensures data isolation between organizations at the database level.
+  </Accordion>
+</AccordionGroup>

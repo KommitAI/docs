@@ -1,0 +1,41 @@
+---
+title: "MCP overview"
+description: "How Kommit gives AI coding tools persistent memory and project context via the Model Context Protocol."
+---
+
+The [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) is an open standard for connecting AI tools to external data sources. Kommit implements an MCP server that exposes your project specs, memory, and data schemas to AI coding tools.
+
+## Why MCP matters
+
+Without MCP, every AI coding session starts from scratch. The AI reads your code but doesn't know:
+
+- What decisions you've made and why
+- What the product requirements are
+- How the data model is designed
+- What conventions your team follows
+
+Kommit solves this by serving as the memory layer. When your AI tool sends a query, Kommit searches your project memory and returns relevant context.
+
+## Available MCP tools
+
+When connected, AI tools can call these Kommit tools:
+
+| Tool | Description |
+|------|-------------|
+| `search_memory` | Search project memories by semantic similarity |
+| `add_memory` | Store a new decision, learning, or preference |
+| `get_project_overview` | Get a full snapshot of the project — description, features, tech stack |
+| `get_spec` | Retrieve the project specification (canvas nodes and edges) |
+| `get_data_schema` | Get the project's data model definitions |
+| `get_feature` | Get details about a specific feature node |
+| `get_tech_stack` | Get the project's technology choices |
+| `list_projects` | List all projects in the organization |
+
+## How it works
+
+1. You generate an API key in Kommit (prefixed `km_`)
+2. You add the Kommit MCP server URL to your AI tool's configuration
+3. When the AI needs context, it calls Kommit's MCP tools
+4. Kommit authenticates the request, resolves the project, and returns relevant data
+
+See [MCP setup](/mcp/setup) for configuration instructions.

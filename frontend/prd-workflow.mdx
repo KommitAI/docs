@@ -1,0 +1,44 @@
+---
+title: "PRD workflow"
+description: "Frontend architecture for PRD generation, refinement, and export."
+---
+
+The PRD workflow converts canvas specifications into structured product requirements documents.
+
+## Generation flow
+
+<Steps>
+  <Step title="Canvas to context">
+    The frontend reads all canvas nodes and edges, serializes them, and sends them to the generation API endpoint.
+  </Step>
+  <Step title="Streaming progress">
+    The UI shows real-time progress as the PRD generates via SSE. A progress indicator shows the current stage (reading canvas, generating, finalizing).
+  </Step>
+  <Step title="Rendered output">
+    The completed PRD is rendered as formatted Markdown with section navigation. Users can scroll through and review each section.
+  </Step>
+</Steps>
+
+## Refinement
+
+The refinement interface is a conversational UI alongside the PRD. Users provide feedback on specific sections, and the AI updates the document. Each refinement:
+
+- Creates a new version
+- Preserves the conversation history
+- Shows a diff against the previous version
+
+## Version comparison
+
+The version picker lets you compare any two PRD versions side by side. Changes are highlighted as additions, removals, and modifications.
+
+## Export options
+
+| Format | Implementation | Use case |
+|--------|---------------|----------|
+| **Markdown** | Raw text download | Import into docs or wikis |
+| **PDF** | PDFMake rendering | Sharing with stakeholders |
+| **Image** | html-to-image capture | Embedding in Slack, presentations |
+
+## Ticket extraction
+
+The ticket extraction tool parses a PRD into discrete work items. Each ticket includes a title, description, and suggested priority. Extracted tickets can be pushed to Linear, Jira, or Notion through the integrations system.

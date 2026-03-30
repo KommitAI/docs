@@ -1,0 +1,40 @@
+---
+title: "PRD generation"
+description: "Generate and refine product requirements documents from your canvas specs."
+---
+
+Kommit generates structured PRDs from the nodes and edges on your project canvas. The output is a complete product requirements document informed by your spec.
+
+## Generating a PRD
+
+<Steps>
+  <Step title="Define your canvas">
+    Add nodes for features, data models, user flows, and technical decisions. The more detail in your structured data, the better the PRD.
+  </Step>
+  <Step title="Start generation">
+    Navigate to **PRD > Generate**. Kommit reads all canvas nodes, their relationships, and your project memory, then streams a PRD in real time via SSE.
+  </Step>
+  <Step title="Review the output">
+    The generated PRD includes sections for overview, requirements, user stories, technical considerations, and acceptance criteria — derived from your canvas content.
+  </Step>
+</Steps>
+
+## Refining a PRD
+
+After generation, use the **Refine** interface to iterate. This is a conversational workflow — you provide feedback on specific sections, and Kommit updates the PRD accordingly. Refinement messages are preserved as conversation history.
+
+## Version history
+
+Each generation and refinement creates a new version. You can compare versions side by side to see what changed.
+
+## Exporting
+
+Export your PRD in multiple formats:
+
+- **Markdown** — raw Markdown text
+- **PDF** — generated via PDFMake with formatting
+- **Image** — rendered via html-to-image for sharing in Slack or presentations
+
+## Ticket extraction
+
+Extract actionable tickets from a PRD for your project management tool. Kommit identifies discrete work items from the requirements and structures them for import into Linear, Jira, or Notion.

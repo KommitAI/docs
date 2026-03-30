@@ -1,0 +1,44 @@
+---
+title: "Integrations"
+description: "Connect GitHub, Linear, Jira, Notion, Figma, and Slack to your Kommit projects."
+---
+
+Kommit integrates with the tools your team already uses. Configure integrations from **Settings > Integrations** in your dashboard.
+
+<Columns cols={2}>
+  <Card title="GitHub" icon="github">
+    Install the Kommit GitHub App to sync repositories. Kommit can analyze your codebase structure, track changes, and import source context into your project specs.
+
+    Supports OAuth for user-level access and App installation for org-level repo access.
+  </Card>
+
+  <Card title="Linear" icon="circle-dot">
+    Connect Linear to push tickets extracted from PRDs directly into your Linear projects. Two-way sync keeps issue status updated.
+  </Card>
+
+  <Card title="Jira" icon="ticket">
+    OAuth-based Jira integration for creating issues from PRD-generated tickets. Map Kommit node types to Jira issue types.
+  </Card>
+
+  <Card title="Notion" icon="file-lines">
+    Sync project specs and PRDs to Notion pages. Use Notion as a read-only mirror of your Kommit project for stakeholders who prefer Notion.
+  </Card>
+
+  <Card title="Figma" icon="pen-ruler">
+    Attach Figma files and frames to canvas nodes as design assets. Preview designs directly in the node asset lightbox.
+  </Card>
+
+  <Card title="Slack" icon="hashtag">
+    Get notifications in Slack when PRDs are generated, memories conflict, or feedback is submitted. Configure per-channel routing.
+  </Card>
+</Columns>
+
+## GitHub codebase analysis
+
+When you connect a GitHub repository, Kommit can analyze it to generate:
+
+- **Feature graphs** — a map of the features in your codebase
+- **Dependency maps** — how modules and packages relate
+- **Diffs** — what changed between analysis runs
+
+This analysis feeds into PRD generation, giving the AI context about your existing codebase when writing requirements.

@@ -1,0 +1,43 @@
+---
+title: "Update project"
+description: "Update an existing project's name, description, or status."
+api: "PATCH /v1/projects/{id}"
+---
+
+<ParamField path="id" type="string" required>
+  Project UUID.
+</ParamField>
+
+<ParamField body="name" type="string">
+  New name (1-200 characters).
+</ParamField>
+
+<ParamField body="description" type="string">
+  New description (max 2,000 characters).
+</ParamField>
+
+<ParamField body="status" type="string">
+  One of `active` or `archived`.
+</ParamField>
+
+<CodeGroup>
+```bash Request
+curl -X PATCH https://api.getkommit.ai/v1/projects/a1b2c3d4-e5f6-7890-abcd-ef1234567890 \
+  -H "Authorization: Bearer km_your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{ "status": "archived" }'
+```
+
+```json Response
+{
+  "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "name": "Mobile App Redesign",
+  "description": "Complete redesign of the iOS and Android apps",
+  "status": "archived",
+  "templateSlug": null,
+  "createdBy": "usr_abc123",
+  "createdAt": "2025-03-15T10:30:00Z",
+  "updatedAt": "2025-03-25T16:00:00Z"
+}
+```
+</CodeGroup>

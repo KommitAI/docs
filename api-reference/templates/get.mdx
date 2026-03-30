@@ -1,0 +1,39 @@
+---
+title: "Get template"
+description: "Retrieve a single template by ID."
+api: "GET /v1/templates/{id}"
+---
+
+<ParamField path="id" type="string" required>Template UUID.</ParamField>
+
+<CodeGroup>
+```bash Request
+curl https://api.getkommit.ai/v1/templates/t1a2b3c4-d5e6-7890-abcd-ef1234567890 \
+  -H "Authorization: Bearer km_your_api_key"
+```
+
+```json Response
+{
+  "id": "t1a2b3c4-d5e6-7890-abcd-ef1234567890",
+  "name": "SaaS Starter",
+  "slug": "saas-starter",
+  "description": "Pre-configured canvas for a typical SaaS application with auth, billing, and core features.",
+  "published": true,
+  "config": {
+    "nodes": [
+      {
+        "nodeType": "feature",
+        "title": "User authentication",
+        "structuredData": { "priority": "high" },
+        "positionX": 100,
+        "positionY": 100,
+        "width": 280,
+        "height": 180
+      }
+    ],
+    "edges": []
+  },
+  "createdAt": "2025-01-10T08:00:00Z"
+}
+```
+</CodeGroup>

@@ -1,0 +1,46 @@
+---
+title: "Update node"
+description: "Update a single node's properties."
+api: "PATCH /v1/projects/{projectId}/nodes/{nodeId}"
+---
+
+<ParamField path="projectId" type="string" required>
+  Project UUID.
+</ParamField>
+
+<ParamField path="nodeId" type="string" required>
+  Node UUID.
+</ParamField>
+
+<ParamField body="title" type="string">Updated title.</ParamField>
+<ParamField body="structuredData" type="object">Updated structured data (replaces entire object).</ParamField>
+<ParamField body="positionX" type="number">New X position.</ParamField>
+<ParamField body="positionY" type="number">New Y position.</ParamField>
+<ParamField body="width" type="number">New width (must be positive).</ParamField>
+<ParamField body="height" type="number">New height (must be positive).</ParamField>
+<ParamField body="collapsed" type="boolean">Collapsed state.</ParamField>
+
+<CodeGroup>
+```bash Request
+curl -X PATCH https://api.getkommit.ai/v1/projects/a1b2c3d4-e5f6-7890-abcd-ef1234567890/nodes/n1a2b3c4-d5e6-7890-abcd-ef1234567890 \
+  -H "Authorization: Bearer km_your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{ "title": "User auth (v2)", "collapsed": true }'
+```
+
+```json Response
+{
+  "id": "n1a2b3c4-d5e6-7890-abcd-ef1234567890",
+  "nodeType": "feature",
+  "title": "User auth (v2)",
+  "structuredData": { "description": "Email/password and GitHub OAuth sign-in" },
+  "positionX": 100,
+  "positionY": 200,
+  "width": 280,
+  "height": 180,
+  "collapsed": true,
+  "createdAt": "2025-03-15T10:30:00Z",
+  "updatedAt": "2025-03-25T11:00:00Z"
+}
+```
+</CodeGroup>

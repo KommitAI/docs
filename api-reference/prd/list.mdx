@@ -1,0 +1,40 @@
+---
+title: "List PRDs"
+description: "Retrieve all PRD generations for a project."
+api: "GET /v1/projects/{projectId}/prd"
+---
+
+<ParamField path="projectId" type="string" required>Project UUID.</ParamField>
+
+<ResponseField name="data" type="array">
+  <Expandable title="PRD object">
+    <ResponseField name="id" type="string" required>UUID</ResponseField>
+    <ResponseField name="version" type="number" required>Version number</ResponseField>
+    <ResponseField name="markdownContent" type="string" required>PRD in Markdown format</ResponseField>
+    <ResponseField name="jsonContent" type="object">Structured PRD data</ResponseField>
+    <ResponseField name="tokenUsage" type="object">Input/output token counts</ResponseField>
+    <ResponseField name="createdAt" type="string" required>ISO 8601</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<CodeGroup>
+```bash Request
+curl https://api.getkommit.ai/v1/projects/a1b2c3d4-e5f6-7890-abcd-ef1234567890/prd \
+  -H "Authorization: Bearer km_your_api_key"
+```
+
+```json Response
+{
+  "data": [
+    {
+      "id": "prd_a1b2c3d4",
+      "version": 2,
+      "markdownContent": "# Mobile App Redesign\n\n## Overview\n...",
+      "jsonContent": { "sections": [...] },
+      "tokenUsage": { "input": 3200, "output": 4800 },
+      "createdAt": "2025-03-20T14:00:00Z"
+    }
+  ]
+}
+```
+</CodeGroup>

@@ -1,0 +1,34 @@
+---
+title: "Update edge"
+description: "Update an edge's handle positions or type."
+api: "PATCH /v1/projects/{projectId}/edges/{edgeId}"
+---
+
+<ParamField path="projectId" type="string" required>Project UUID.</ParamField>
+<ParamField path="edgeId" type="string" required>Edge UUID.</ParamField>
+
+<ParamField body="sourceHandle" type="string">One of `top`, `bottom`, `left`, `right`.</ParamField>
+<ParamField body="targetHandle" type="string">One of `top`, `bottom`, `left`, `right`.</ParamField>
+<ParamField body="edgeType" type="string">Custom edge type label.</ParamField>
+
+<CodeGroup>
+```bash Request
+curl -X PATCH https://api.getkommit.ai/v1/projects/a1b2c3d4-e5f6-7890-abcd-ef1234567890/edges/e1a2b3c4-d5e6-7890-abcd-ef1234567890 \
+  -H "Authorization: Bearer km_your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{ "edgeType": "composition" }'
+```
+
+```json Response
+{
+  "id": "e1a2b3c4-d5e6-7890-abcd-ef1234567890",
+  "sourceNodeId": "n1a2b3c4-d5e6-7890-abcd-ef1234567890",
+  "targetNodeId": "n2b3c4d5-e6f7-8901-bcde-f23456789012",
+  "sourceCardId": null,
+  "targetCardId": null,
+  "sourceHandle": "bottom",
+  "targetHandle": "top",
+  "edgeType": "composition"
+}
+```
+</CodeGroup>

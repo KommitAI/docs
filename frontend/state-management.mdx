@@ -1,0 +1,60 @@
+---
+title: "State management"
+description: "Client state with Zustand and server state with SWR."
+---
+
+Kommit splits state management into two layers: **Zustand** for fast-changing client state and **SWR** for server-derived data.
+
+## Zustand stores
+
+### Canvas store
+
+The canvas store manages the interactive project editor state:
+
+```typescript
+// Reading state in a component
+const nodes = useCanvasStore((s) => s.nodes);
+const selectedNodeId = useCanvasStore((s) => s.selectedNodeId);
+
+// Writing state
+const updateNode = useCanvasStore((s) => s.updateNode);
+updateNode(nodeId, { title: "Updated title" });
+```
+
+Key state includes:
+- **Nodes and edges** — the full canvas graph
+- **Selection** — which node or edge is selected
+- **Viewport** — zoom level and pan position
+- **Dirty tracking** — whether unsaved changes exist
+
+### View store
+
+Manages navigation and filtering state:
+
+```typescript
+const activeTab = useViewStore((s) => s.activeTab);
+const setTab = useViewStore((s) => s.setTab);
+```
+
+### Codebase map store
+
+Manages the repository visualization view state.
+
+## SWR for server state
+
+SWR handles data fetching with automatic caching, revalidation, and deduplication:
+
+```typescript
+const { data: projects, isLoading } = useSWR("/api/projects", fetcher);
+```
+
+SWR is used for data that comes from the server and doesn't change on every frame — project lists, memory records, conversation history, template catalogs.
+
+## When to use which
+
+| State type | Tool | Examples |
+|-----------|------|---------|
+| Rapidly changing UI state | Zustand | Node positions, selections, viewport |
+| Server-derived data | SWR | Project lists, memories, conversations |
+| Form state | React state (`useState`) | Input values, validation errors |
+| URL state | Next.js router | Current page, query params |

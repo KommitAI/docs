@@ -1,0 +1,54 @@
+---
+title: "Authentication"
+description: "How authentication, sessions, and multi-tenancy work in the Kommit frontend."
+---
+
+Kommit uses [Better Auth](https://www.better-auth.com/) for authentication and session management.
+
+## Supported methods
+
+- **Email and password** — with email verification via Resend
+- **GitHub OAuth** — links to the user's GitHub account and auto-verifies email
+
+## Session management
+
+After sign-in, Better Auth sets a `better-auth.session_token` cookie. This cookie authenticates all subsequent requests. Sessions are stored in the database and validated on each request.
+
+## Multi-tenancy
+
+Kommit uses organization-based multi-tenancy:
+
+1. User signs in and their session is validated
+2. Middleware resolves which organization the user belongs to
+3. All database queries are scoped to that organization via row-level security
+
+### Roles
+
+| Role | Permissions |
+|------|------------|
+| **Owner** | Full access, billing, member management, org deletion |
+| **Admin** | Member management, integration config, template management |
+| **Member** | Project access, memory, chat, PRD generation |
+
+## Middleware flow
+
+The Next.js middleware (`middleware.ts`) runs on every request:
+
+```typescript
+// Simplified flow
+export async function middleware(request: NextRequest) {
+  const session = await auth.api.getSession({ headers: request.headers });
+
+  if (!session && isProtectedRoute(request)) {
+    return redirect("/sign-in");
+  }
+
+  // Tenant resolution happens in API route middleware
+}
+```
+
+Protected routes under `(dashboard)` redirect to `/sign-in` if there's no valid session.
+
+## API key auth
+
+For MCP and programmatic access, users generate API keys (prefixed `km_`) from the settings page. These are passed as Bearer tokens and validated by the API middleware. API keys are scoped to an organization and rate-limited to 1,000 requests per hour.

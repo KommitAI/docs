@@ -1,0 +1,59 @@
+---
+title: "List projects"
+description: "Retrieve a paginated list of projects in your organization."
+api: "GET /v1/projects"
+---
+
+<ParamField query="status" type="string">
+  Filter by project status. One of `active` or `archived`.
+</ParamField>
+
+<ParamField query="cursor" type="string">
+  Pagination cursor from a previous response.
+</ParamField>
+
+<ParamField query="limit" type="number" default="20">
+  Items per page (1-100).
+</ParamField>
+
+<ResponseField name="data" type="array">
+  <Expandable title="Project object">
+    <ResponseField name="id" type="string" required>UUID</ResponseField>
+    <ResponseField name="name" type="string" required />
+    <ResponseField name="description" type="string" />
+    <ResponseField name="status" type="string" required>One of `active`, `archived`</ResponseField>
+    <ResponseField name="templateSlug" type="string" />
+    <ResponseField name="createdBy" type="string" required>User ID</ResponseField>
+    <ResponseField name="createdAt" type="string" required>ISO 8601 timestamp</ResponseField>
+    <ResponseField name="updatedAt" type="string" required>ISO 8601 timestamp</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="nextCursor" type="string">
+  Cursor for the next page, or `null` if no more results.
+</ResponseField>
+
+<CodeGroup>
+```bash Request
+curl https://api.getkommit.ai/v1/projects?status=active&limit=10 \
+  -H "Authorization: Bearer km_your_api_key"
+```
+
+```json Response
+{
+  "data": [
+    {
+      "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "name": "Mobile App Redesign",
+      "description": "Complete redesign of the iOS and Android apps",
+      "status": "active",
+      "templateSlug": null,
+      "createdBy": "usr_abc123",
+      "createdAt": "2025-03-15T10:30:00Z",
+      "updatedAt": "2025-03-20T14:22:00Z"
+    }
+  ],
+  "nextCursor": null
+}
+```
+</CodeGroup>

@@ -1,0 +1,32 @@
+---
+title: "Update memory"
+description: "Update a memory's content, category, or status."
+api: "PATCH /v1/projects/{projectId}/memory/{memoryId}"
+---
+
+<ParamField path="projectId" type="string" required>Project UUID.</ParamField>
+<ParamField path="memoryId" type="string" required>Memory UUID.</ParamField>
+
+<ParamField body="content" type="string">Updated content (1-10,000 characters). Triggers re-embedding.</ParamField>
+<ParamField body="category" type="string">One of `decision`, `learning`, `progress`, `preference`.</ParamField>
+<ParamField body="status" type="string">One of `active`, `superseded`, `conflicting`, `archived`.</ParamField>
+
+<CodeGroup>
+```bash Request
+curl -X PATCH https://api.getkommit.ai/v1/projects/a1b2c3d4-e5f6-7890-abcd-ef1234567890/memory/m1a2b3c4-d5e6-7890-abcd-ef1234567890 \
+  -H "Authorization: Bearer km_your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{ "status": "archived" }'
+```
+
+```json Response
+{
+  "id": "m1a2b3c4-d5e6-7890-abcd-ef1234567890",
+  "content": "Use PostgreSQL with Drizzle ORM instead of Prisma.",
+  "category": "decision",
+  "status": "archived",
+  "createdAt": "2025-03-15T10:30:00Z",
+  "updatedAt": "2025-03-25T11:00:00Z"
+}
+```
+</CodeGroup>

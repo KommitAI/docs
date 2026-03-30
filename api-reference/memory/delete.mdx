@@ -1,0 +1,25 @@
+---
+title: "Delete memory"
+description: "Permanently delete a memory."
+api: "DELETE /v1/projects/{projectId}/memory/{memoryId}"
+---
+
+<ParamField path="projectId" type="string" required>Project UUID.</ParamField>
+<ParamField path="memoryId" type="string" required>Memory UUID.</ParamField>
+
+<Warning>
+  This permanently deletes the memory and its vector embedding. Consider archiving instead if you want to preserve history.
+</Warning>
+
+<CodeGroup>
+```bash Request
+curl -X DELETE https://api.getkommit.ai/v1/projects/a1b2c3d4-e5f6-7890-abcd-ef1234567890/memory/m1a2b3c4-d5e6-7890-abcd-ef1234567890 \
+  -H "Authorization: Bearer km_your_api_key"
+```
+
+```json Response
+{
+  "success": true
+}
+```
+</CodeGroup>

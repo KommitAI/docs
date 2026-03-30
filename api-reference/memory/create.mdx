@@ -1,0 +1,44 @@
+---
+title: "Create memory"
+description: "Store a new memory for a project."
+api: "POST /v1/projects/{projectId}/memory"
+---
+
+<ParamField path="projectId" type="string" required>Project UUID.</ParamField>
+
+<ParamField body="content" type="string" required>
+  Memory content (1-10,000 characters).
+</ParamField>
+
+<ParamField body="category" type="string">
+  One of `decision`, `learning`, `progress`, `preference`. If omitted, Kommit infers the category.
+</ParamField>
+
+The memory is automatically embedded as a vector for semantic search.
+
+<CodeGroup>
+```bash Request
+curl -X POST https://api.getkommit.ai/v1/projects/a1b2c3d4-e5f6-7890-abcd-ef1234567890/memory \
+  -H "Authorization: Bearer km_your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "Rate limiting is implemented per-endpoint using an in-memory store. Switch to Redis-backed rate limiting before scaling beyond a single instance.",
+    "category": "decision"
+  }'
+```
+
+```json Response
+{
+  "id": "m2b3c4d5-e6f7-8901-bcde-f23456789012",
+  "content": "Rate limiting is implemented per-endpoint using an in-memory store. Switch to Redis-backed rate limiting before scaling beyond a single instance.",
+  "category": "decision",
+  "summary": "Using in-memory rate limiting, plan to move to Redis",
+  "status": "active",
+  "linkedNodeIds": [],
+  "entities": ["Redis", "rate limiting"],
+  "confidence": 0.9,
+  "createdAt": "2025-03-25T09:00:00Z",
+  "updatedAt": "2025-03-25T09:00:00Z"
+}
+```
+</CodeGroup>

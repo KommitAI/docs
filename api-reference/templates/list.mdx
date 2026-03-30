@@ -1,0 +1,40 @@
+---
+title: "List templates"
+description: "Retrieve available project templates."
+api: "GET /v1/templates"
+---
+
+Returns published templates for regular users. Admins see all templates including drafts.
+
+<ResponseField name="data" type="array">
+  <Expandable title="Template object">
+    <ResponseField name="id" type="string" required>UUID</ResponseField>
+    <ResponseField name="name" type="string" required />
+    <ResponseField name="slug" type="string" required>URL-safe identifier</ResponseField>
+    <ResponseField name="description" type="string" />
+    <ResponseField name="published" type="boolean" required />
+    <ResponseField name="createdAt" type="string" required>ISO 8601</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<CodeGroup>
+```bash Request
+curl https://api.getkommit.ai/v1/templates \
+  -H "Authorization: Bearer km_your_api_key"
+```
+
+```json Response
+{
+  "data": [
+    {
+      "id": "t1a2b3c4-d5e6-7890-abcd-ef1234567890",
+      "name": "SaaS Starter",
+      "slug": "saas-starter",
+      "description": "Pre-configured canvas for a typical SaaS application with auth, billing, and core features.",
+      "published": true,
+      "createdAt": "2025-01-10T08:00:00Z"
+    }
+  ]
+}
+```
+</CodeGroup>

@@ -1,0 +1,33 @@
+---
+title: "Search memory (cross-project)"
+description: "Search memories across all projects in your organization."
+api: "GET /v1/memory/search"
+---
+
+Search memories across all projects using semantic similarity. This endpoint is useful when patterns or decisions in one project may apply to another.
+
+<ParamField query="q" type="string">
+  Search query. Matched against memory content using vector similarity.
+</ParamField>
+
+<CodeGroup>
+```bash Request
+curl "https://api.getkommit.ai/v1/memory/search?q=authentication%20approach" \
+  -H "Authorization: Bearer km_your_api_key"
+```
+
+```json Response
+{
+  "data": [
+    {
+      "id": "m1a2b3c4-d5e6-7890-abcd-ef1234567890",
+      "content": "Use Better Auth with email/password and GitHub OAuth. Session tokens stored in httpOnly cookies.",
+      "category": "decision",
+      "status": "active",
+      "projectId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "createdAt": "2025-03-15T10:30:00Z"
+    }
+  ]
+}
+```
+</CodeGroup>

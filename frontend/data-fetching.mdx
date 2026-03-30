@@ -1,0 +1,75 @@
+---
+title: "Data fetching"
+description: "Patterns for loading and mutating data in the Kommit frontend."
+---
+
+## SWR hooks (client components)
+
+Client components use SWR for data fetching with caching and revalidation:
+
+```typescript
+import useSWR from "swr";
+
+function ProjectList() {
+  const { data, error, isLoading } = useSWR("/api/projects", fetcher);
+
+  if (isLoading) return <Skeleton />;
+  if (error) return <ErrorMessage error={error} />;
+
+  return data.map((project) => <ProjectCard key={project.id} project={project} />);
+}
+```
+
+SWR deduplicates concurrent requests to the same key and revalidates on focus.
+
+## React Server Components
+
+Server components fetch data directly in the component body:
+
+```typescript
+async function ProjectPage({ params }: { params: { projectId: string } }) {
+  const project = await getProject(params.projectId);
+  return <ProjectDetails project={project} />;
+}
+```
+
+Used for initial page loads where data doesn't need client-side reactivity.
+
+## API route handlers (mutations)
+
+Mutations go through Next.js API routes. Client components call these via `fetch`:
+
+```typescript
+async function createProject(data: CreateProjectInput) {
+  const res = await fetch("/api/projects", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  return res.json();
+}
+```
+
+After a mutation, invalidate the SWR cache with `mutate("/api/projects")`.
+
+## SSE streaming
+
+Chat and PRD generation use Server-Sent Events for real-time streaming:
+
+```typescript
+const eventSource = new EventSource(
+  `/api/projects/${projectId}/nodes/${nodeId}/chat`
+);
+
+eventSource.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  if (data.type === "text") {
+    appendToResponse(data.content);
+  }
+  if (data.type === "done") {
+    eventSource.close();
+  }
+};
+```
+
+The frontend shows tokens as they arrive, giving immediate feedback during generation.

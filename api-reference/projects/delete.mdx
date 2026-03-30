@@ -1,0 +1,26 @@
+---
+title: "Delete project"
+description: "Soft-delete a project. The project can be restored later."
+api: "DELETE /v1/projects/{id}"
+---
+
+<ParamField path="id" type="string" required>
+  Project UUID.
+</ParamField>
+
+<Note>
+  This is a soft delete. The project's `deletedAt` timestamp is set, but data is preserved and can be restored.
+</Note>
+
+<CodeGroup>
+```bash Request
+curl -X DELETE https://api.getkommit.ai/v1/projects/a1b2c3d4-e5f6-7890-abcd-ef1234567890 \
+  -H "Authorization: Bearer km_your_api_key"
+```
+
+```json Response
+{
+  "success": true
+}
+```
+</CodeGroup>

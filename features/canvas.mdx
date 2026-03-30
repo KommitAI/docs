@@ -1,0 +1,47 @@
+---
+title: "Canvas editor"
+description: "Define project specs visually with an interactive node-based canvas."
+---
+
+The canvas is Kommit's core interface for defining project specifications. It's built on [XYFlow](https://xyflow.com/) and lets you create, connect, and organize nodes that represent your project's features, data models, and architecture.
+
+## Nodes
+
+Each node on the canvas represents a discrete piece of your spec. Nodes have:
+
+- **Type** — feature, data model, user flow, architecture decision, or custom
+- **Title** — a short name visible on the canvas
+- **Structured data** — a flexible JSON object holding the node's details (fields, requirements, acceptance criteria, etc.)
+- **Position and size** — where it sits on the canvas and how large it appears
+- **Collapsed state** — collapse nodes to save space when you don't need the details
+
+### Creating nodes
+
+Use the canvas toolbar to add nodes. Click a node type, then click on the canvas to place it. Double-click a node to open the edit popover where you can fill in structured data.
+
+### Node chat
+
+Each node has an AI chat assistant. Open it from the node context menu to ask questions about the node's scope, generate acceptance criteria, or refine requirements. The chat streams responses in real time using SSE.
+
+## Edges
+
+Edges connect nodes to show relationships — dependencies, compositions, data flows. Each edge connects from a **source handle** to a **target handle** (top, bottom, left, or right side of a node).
+
+To create an edge, drag from one node's handle to another.
+
+## Assets
+
+Nodes can have attached assets — images, design files, Figma links. Assets are organized into folders within each node, and you can preview them in a lightbox.
+
+## Annotations
+
+Add annotations to nodes for extra context that doesn't fit in the structured data — notes, questions, or references.
+
+## Canvas toolbar
+
+The toolbar provides quick access to:
+- Adding new node types
+- Zoom controls
+- Auto-layout (Dagre-based graph layout)
+- Readiness card (shows project completion status)
+- Repository picker for GitHub-connected repos

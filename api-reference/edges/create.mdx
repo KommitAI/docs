@@ -1,0 +1,49 @@
+---
+title: "Create edge"
+description: "Create a connection between two nodes."
+api: "POST /v1/projects/{projectId}/edges"
+---
+
+<ParamField path="projectId" type="string" required>
+  Project UUID.
+</ParamField>
+
+<ParamField body="sourceNodeId" type="string" required>Source node UUID.</ParamField>
+<ParamField body="targetNodeId" type="string" required>Target node UUID.</ParamField>
+<ParamField body="sourceCardId" type="string">Optional card ID within the source node.</ParamField>
+<ParamField body="targetCardId" type="string">Optional card ID within the target node.</ParamField>
+<ParamField body="sourceHandle" type="string" required>
+  Attachment point on the source node. One of `top`, `bottom`, `left`, `right`.
+</ParamField>
+<ParamField body="targetHandle" type="string" required>
+  Attachment point on the target node. One of `top`, `bottom`, `left`, `right`.
+</ParamField>
+<ParamField body="edgeType" type="string">Custom edge type label.</ParamField>
+
+<CodeGroup>
+```bash Request
+curl -X POST https://api.getkommit.ai/v1/projects/a1b2c3d4-e5f6-7890-abcd-ef1234567890/edges \
+  -H "Authorization: Bearer km_your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "sourceNodeId": "n1a2b3c4-d5e6-7890-abcd-ef1234567890",
+    "targetNodeId": "n2b3c4d5-e6f7-8901-bcde-f23456789012",
+    "sourceHandle": "bottom",
+    "targetHandle": "top",
+    "edgeType": "dependency"
+  }'
+```
+
+```json Response
+{
+  "id": "e2b3c4d5-e6f7-8901-bcde-f23456789012",
+  "sourceNodeId": "n1a2b3c4-d5e6-7890-abcd-ef1234567890",
+  "targetNodeId": "n2b3c4d5-e6f7-8901-bcde-f23456789012",
+  "sourceCardId": null,
+  "targetCardId": null,
+  "sourceHandle": "bottom",
+  "targetHandle": "top",
+  "edgeType": "dependency"
+}
+```
+</CodeGroup>

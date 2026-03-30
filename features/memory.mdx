@@ -1,0 +1,51 @@
+---
+title: "Memory system"
+description: "Store project decisions, learnings, and progress as searchable memories for AI tools."
+---
+
+The memory system stores contextual knowledge about your project — decisions you've made, patterns you've discovered, and progress milestones. These memories persist across sessions and are accessible to AI coding tools via [MCP](/mcp/overview).
+
+## Memory categories
+
+Each memory belongs to a category:
+
+| Category | Use for |
+|----------|---------|
+| **Decision** | Architecture choices, technology selections, trade-off resolutions |
+| **Learning** | Patterns discovered, gotchas encountered, things that worked |
+| **Progress** | Milestones reached, features completed, status updates |
+| **Preference** | Coding conventions, style preferences, team agreements |
+
+## Memory status
+
+Memories have a lifecycle status:
+
+- **Active** — current and relevant
+- **Superseded** — replaced by a newer memory
+- **Conflicting** — contradicts another memory (needs resolution)
+- **Archived** — no longer relevant but preserved for history
+
+## Semantic search
+
+Memories are embedded as 1536-dimension vectors using pgvector. When you or an AI tool searches memory, Kommit uses cosine similarity to find the most relevant results — not just keyword matches.
+
+## Conflict detection
+
+When a new memory contradicts an existing one, Kommit flags it as a conflict. You can resolve conflicts by:
+
+- **Keeping the existing** memory
+- **Keeping the new** memory
+- **Merging** both into a single memory
+- **Archiving both** and writing a fresh one
+
+## Cross-project search
+
+Search memories across all projects in your organization from the global memory page. This is useful when patterns or decisions in one project apply to another.
+
+## Memory graph
+
+The graph view visualizes relationships between memories as a force-directed graph, showing how decisions connect to learnings and progress.
+
+## MCP integration
+
+AI coding tools access memories through the MCP `search_memory` tool. When a developer asks their AI assistant about project context, it queries Kommit's memory store and returns relevant decisions and learnings. See [MCP setup](/mcp/setup) for configuration.

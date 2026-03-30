@@ -1,0 +1,37 @@
+---
+title: "Frontend overview"
+description: "Architecture overview of the Kommit frontend — a Next.js 16 App Router application."
+---
+
+The Kommit frontend is a [Next.js 16](https://nextjs.org/) application using the App Router, React 19, and TypeScript. It serves both the web application and the REST API through Next.js API routes.
+
+## Architectural decisions
+
+| Concern | Approach |
+|---------|----------|
+| Rendering | React Server Components for data-heavy pages, client components for interactive UI |
+| Client state | Zustand stores for fast-changing UI state (canvas, view filters) |
+| Server state | SWR for data fetching with caching and revalidation |
+| Styling | Tailwind CSS 4 with shadcn/ui components |
+| Auth | Better Auth with session cookies and org-based multi-tenancy |
+| Canvas | XYFlow for the interactive node editor |
+| Payments | Stripe for subscriptions and billing |
+| AI | Anthropic SDK (Claude) for chat and PRD generation, OpenAI SDK for embeddings |
+
+## Key integrations
+
+- **Better Auth** — handles sign-up, sign-in, GitHub OAuth, session management, and organization-based RBAC
+- **Stripe** — subscription billing, usage tracking, and a billing portal
+- **XYFlow** — the canvas editor for visual project specification
+- **CodeMirror** — SQL query editor for database introspection tools
+- **Drizzle ORM** — database access with row-level security enforcement
+
+## Route structure
+
+The app uses Next.js route groups to separate concerns:
+
+- `(auth)` — public authentication pages (sign-in, sign-up, password reset)
+- `(dashboard)` — protected pages requiring auth (projects, memory, settings, admin)
+- `api` — REST API endpoints (100+ routes)
+
+See [project structure](/frontend/project-structure) for the full directory layout.

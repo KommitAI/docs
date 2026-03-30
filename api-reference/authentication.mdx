@@ -1,0 +1,36 @@
+---
+title: "Authentication"
+description: "Authenticate API requests with session cookies or API keys."
+---
+
+All tenant-scoped API endpoints require authentication. Kommit supports two methods.
+
+## Session cookies
+
+When you sign in through the web app, Better Auth sets a session cookie (`better-auth.session_token`). This cookie is sent automatically with requests from the browser.
+
+## API keys
+
+For programmatic access and MCP integrations, use an API key. Keys are prefixed with `km_` and passed as a Bearer token:
+
+```bash
+curl https://api.getkommit.ai/v1/projects \
+  -H "Authorization: Bearer km_your_api_key"
+```
+
+### Generating a key
+
+1. Go to **Settings > API keys** in the Kommit dashboard
+2. Click **Generate key**
+3. Copy the key — it's shown once and cannot be retrieved later
+
+API keys are scoped to your organization and have a rate limit of 1,000 requests per hour.
+
+## Middleware flow
+
+Every authenticated request goes through two middleware steps:
+
+1. **`requireAuth`** — validates the session or API key. Returns `401 Unauthorized` if missing or invalid.
+2. **`resolveTenant`** — maps the authenticated user to an organization. Returns `403 Forbidden` if the user has no org membership.
+
+After both pass, the request has access to the user's organization context and row-level security is enforced at the database level.

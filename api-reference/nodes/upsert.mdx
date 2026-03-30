@@ -1,0 +1,90 @@
+---
+title: "Batch upsert nodes"
+description: "Create or update up to 100 nodes in a single request."
+api: "POST /v1/projects/{projectId}/nodes"
+---
+
+<ParamField path="projectId" type="string" required>
+  Project UUID.
+</ParamField>
+
+<ParamField body="nodes" type="array" required>
+  Array of 1-100 node objects.
+
+  <Expandable title="Node input">
+    <ParamField body="id" type="string">
+      UUID. If provided and the node exists, it's updated. If omitted, a new node is created.
+    </ParamField>
+    <ParamField body="nodeType" type="string" required>
+      Node type (e.g., `feature`, `data-model`, `user-flow`).
+    </ParamField>
+    <ParamField body="title" type="string" required>
+      Node title (min 1 character).
+    </ParamField>
+    <ParamField body="structuredData" type="object" required>
+      Flexible JSON object for the node's content.
+    </ParamField>
+    <ParamField body="positionX" type="number" required>
+      X position on the canvas.
+    </ParamField>
+    <ParamField body="positionY" type="number" required>
+      Y position on the canvas.
+    </ParamField>
+    <ParamField body="width" type="number" required>
+      Node width (must be positive).
+    </ParamField>
+    <ParamField body="height" type="number" required>
+      Node height (must be positive).
+    </ParamField>
+    <ParamField body="collapsed" type="boolean" default="false">
+      Whether the node is collapsed on the canvas.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<CodeGroup>
+```bash Request
+curl -X POST https://api.getkommit.ai/v1/projects/a1b2c3d4-e5f6-7890-abcd-ef1234567890/nodes \
+  -H "Authorization: Bearer km_your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nodes": [
+      {
+        "nodeType": "feature",
+        "title": "Billing dashboard",
+        "structuredData": {
+          "description": "Show subscription status and invoices",
+          "priority": "medium"
+        },
+        "positionX": 400,
+        "positionY": 100,
+        "width": 280,
+        "height": 180
+      }
+    ]
+  }'
+```
+
+```json Response
+{
+  "data": [
+    {
+      "id": "n2b3c4d5-e6f7-8901-bcde-f23456789012",
+      "nodeType": "feature",
+      "title": "Billing dashboard",
+      "structuredData": {
+        "description": "Show subscription status and invoices",
+        "priority": "medium"
+      },
+      "positionX": 400,
+      "positionY": 100,
+      "width": 280,
+      "height": 180,
+      "collapsed": false,
+      "createdAt": "2025-03-25T09:00:00Z",
+      "updatedAt": "2025-03-25T09:00:00Z"
+    }
+  ]
+}
+```
+</CodeGroup>

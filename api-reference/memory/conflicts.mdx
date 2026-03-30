@@ -1,0 +1,73 @@
+---
+title: "Memory conflicts"
+description: "List and resolve conflicting memories."
+api: "GET /v1/projects/{projectId}/memory/conflicts"
+---
+
+When a new memory contradicts an existing one, Kommit flags both as conflicting. Use these endpoints to list and resolve conflicts.
+
+## List conflicts
+
+<ParamField path="projectId" type="string" required>Project UUID.</ParamField>
+
+<CodeGroup>
+```bash Request
+curl https://api.getkommit.ai/v1/projects/a1b2c3d4-e5f6-7890-abcd-ef1234567890/memory/conflicts \
+  -H "Authorization: Bearer km_your_api_key"
+```
+
+```json Response
+{
+  "data": [
+    {
+      "id": "c1a2b3c4-d5e6-7890-abcd-ef1234567890",
+      "existingMemoryId": "m1a2b3c4-d5e6-7890-abcd-ef1234567890",
+      "newMemoryId": "m2b3c4d5-e6f7-8901-bcde-f23456789012",
+      "status": "unresolved",
+      "createdAt": "2025-03-25T09:00:00Z"
+    }
+  ]
+}
+```
+</CodeGroup>
+
+## Resolve a conflict
+
+```
+POST /v1/projects/{projectId}/memory/conflicts/{conflictId}/resolve
+```
+
+<ParamField path="conflictId" type="string" required>Conflict UUID.</ParamField>
+
+<ParamField body="resolution" type="string" required>
+  One of:
+  - `keep_existing` — keep the original memory, archive the new one
+  - `keep_new` — keep the new memory, supersede the original
+  - `merge` — combine both into a single memory (requires `mergedContent`)
+  - `archive_both` — archive both and write a fresh memory separately
+</ParamField>
+
+<ParamField body="mergedContent" type="string">
+  Required when `resolution` is `merge`. The combined memory content.
+</ParamField>
+
+<CodeGroup>
+```bash Request
+curl -X POST https://api.getkommit.ai/v1/projects/a1b2c3d4-e5f6-7890-abcd-ef1234567890/memory/conflicts/c1a2b3c4-d5e6-7890-abcd-ef1234567890/resolve \
+  -H "Authorization: Bearer km_your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "resolution": "merge",
+    "mergedContent": "Use PostgreSQL with Drizzle ORM. Originally chose over Prisma for edge runtime support. Now also preferred for its SQL-like query builder API."
+  }'
+```
+
+```json Response
+{
+  "id": "c1a2b3c4-d5e6-7890-abcd-ef1234567890",
+  "status": "resolved",
+  "resolution": "merge",
+  "resolvedAt": "2025-03-25T11:00:00Z"
+}
+```
+</CodeGroup>

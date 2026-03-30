@@ -1,33 +1,74 @@
 ---
-title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+title: "API overview"
+description: "Base URL, versioning, authentication, and error handling for the Kommit API."
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+The Kommit API is a REST API that lets you manage projects, nodes, edges, memory, and more programmatically.
 
-## Welcome
+## Base URL
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+```
+https://api.getkommit.ai
+```
 
-<Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
+All endpoints are prefixed with `/v1`.
 
 ## Authentication
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+Requests require either a session cookie (from the web app) or an API key passed as a Bearer token. See [authentication](/api-reference/authentication) for details.
+
+## Content type
+
+All request and response bodies use JSON. Set `Content-Type: application/json` on requests with a body.
+
+## Pagination
+
+List endpoints use cursor-based pagination:
+
+<ParamField query="cursor" type="string">
+  Cursor from a previous response's `nextCursor` field. Omit for the first page.
+</ParamField>
+
+<ParamField query="limit" type="number" default="20">
+  Number of items per page. Min 1, max 100.
+</ParamField>
+
+Paginated responses follow this shape:
 
 ```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
+{
+  "data": [...],
+  "nextCursor": "eyJpZCI6IjEyMyJ9"
+}
 ```
+
+When `nextCursor` is `null`, there are no more pages.
+
+## Error responses
+
+Errors return a consistent JSON structure:
+
+```json
+{
+  "error": "Project not found",
+  "code": "NOT_FOUND",
+  "status": 404
+}
+```
+
+Validation errors include field-level details:
+
+```json
+{
+  "error": "Validation failed",
+  "code": "VALIDATION_ERROR",
+  "status": 400,
+  "details": [
+    { "field": "name", "message": "Required" }
+  ]
+}
+```
+
+## Rate limiting
+
+API key requests are limited to 1,000 requests per hour. The API returns `429 Too Many Requests` when the limit is exceeded.

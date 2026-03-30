@@ -1,0 +1,133 @@
+---
+title: "MCP setup"
+description: "Connect Claude Code, Cursor, and Windsurf to Kommit via the Model Context Protocol."
+---
+
+<Steps>
+  <Step title="Generate an API key">
+    Go to **Settings > API keys** in your Kommit dashboard. Click **Generate key** and copy the key (prefixed `km_`).
+
+    <Warning>
+      API keys are shown once. Store them securely — you can't retrieve them later.
+    </Warning>
+  </Step>
+
+  <Step title="Configure your AI tool">
+    Add the Kommit MCP server to your tool's configuration:
+
+    <Tabs>
+      <Tab title="Claude Code">
+        Add to `.claude/settings.json` in your project root (or `~/.claude/settings.json` for global):
+
+        ```json
+        {
+          "mcpServers": {
+            "kommit": {
+              "url": "https://mcp.getkommit.ai/sse?token=km_your_api_key"
+            }
+          }
+        }
+        ```
+      </Tab>
+
+      <Tab title="Cursor">
+        Add to `.cursor/mcp.json` in your project root:
+
+        ```json
+        {
+          "mcpServers": {
+            "kommit": {
+              "url": "https://mcp.getkommit.ai/sse?token=km_your_api_key"
+            }
+          }
+        }
+        ```
+      </Tab>
+
+      <Tab title="Windsurf">
+        Add to your Windsurf MCP configuration:
+
+        ```json
+        {
+          "mcpServers": {
+            "kommit": {
+              "url": "https://mcp.getkommit.ai/sse?token=km_your_api_key"
+            }
+          }
+        }
+        ```
+      </Tab>
+    </Tabs>
+  </Step>
+
+  <Step title="Verify the connection">
+    Start a new session in your AI tool and ask it something about your project. It should call `search_memory` or `get_project_overview` automatically.
+
+    If the tool reports a connection error, verify:
+    - The API key is correct and not expired
+    - The key has the right project scope
+    - Your network allows outbound HTTPS to `mcp.getkommit.ai`
+  </Step>
+</Steps>
+
+## Available tools
+
+Once connected, your AI tool can use these Kommit tools:
+
+<AccordionGroup>
+  <Accordion title="search_memory">
+    Search project memories by semantic similarity.
+
+    **Parameters:**
+    - `query` (string, required) — what you're looking for
+    - `project_id` (string, optional) — scope to a specific project
+    - `category` (string, optional) — filter by decision, learning, progress, or preference
+  </Accordion>
+
+  <Accordion title="add_memory">
+    Store a new memory (decision, learning, or preference).
+
+    **Parameters:**
+    - `content` (string, required) — the memory content
+    - `category` (string, optional) — decision, learning, progress, or preference
+    - `project_id` (string, required) — which project this belongs to
+  </Accordion>
+
+  <Accordion title="get_project_overview">
+    Get a full snapshot of a project — description, target audience, tech stack, features, and memory stats.
+
+    **Parameters:**
+    - `project_id` (string, required) — the project ID
+  </Accordion>
+
+  <Accordion title="get_spec">
+    Retrieve the full project specification including all canvas nodes and their structured data.
+
+    **Parameters:**
+    - `project_id` (string, required) — the project ID
+  </Accordion>
+
+  <Accordion title="get_data_schema">
+    Get the project's data model definitions.
+
+    **Parameters:**
+    - `project_id` (string, required) — the project ID
+  </Accordion>
+
+  <Accordion title="get_feature">
+    Get details about a specific feature node.
+
+    **Parameters:**
+    - `feature_id` (string, required) — the feature node ID
+  </Accordion>
+
+  <Accordion title="list_projects">
+    List all projects in the organization.
+
+    No required parameters.
+  </Accordion>
+</AccordionGroup>
+
+## Rate limits
+
+API keys are rate-limited to 1,000 requests per hour. MCP tool calls count toward this limit. If you hit the limit, the server returns a `429` status and the AI tool will see an error.

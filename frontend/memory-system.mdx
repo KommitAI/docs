@@ -1,0 +1,44 @@
+---
+title: "Memory system UI"
+description: "Frontend components for memory management, visualization, and conflict resolution."
+---
+
+The memory system UI provides multiple views for managing project and cross-project memories.
+
+## Memory table
+
+The default view is a filterable, searchable table of memories. Filters include:
+
+- **Category** — decision, learning, progress, preference
+- **Status** — active, superseded, conflicting, archived
+- **Search** — semantic search using vector embeddings
+
+The table supports inline editing for content and category, and bulk status changes.
+
+## Memory graph
+
+The graph view uses [react-force-graph-2d](https://github.com/vasturiano/react-force-graph-2d) to display a force-directed visualization of memory relationships. Nodes represent memories, and edges represent semantic similarity or shared entities.
+
+This view is useful for spotting clusters of related decisions and identifying gaps in project context.
+
+## Conflict resolution
+
+When memories conflict, the UI presents them side by side with resolution options:
+
+- **Keep existing** — archive the new memory
+- **Keep new** — supersede the existing memory
+- **Merge** — open an editor to combine both into one
+- **Archive both** — dismiss both and start fresh
+
+## Cross-project search
+
+The global memory page (`/memory`) searches across all projects in the organization. Results show which project each memory belongs to, making it easy to find decisions that apply across projects.
+
+## Health metrics
+
+The memory dashboard shows statistics:
+
+- Total memories by category and status
+- Unresolved conflicts
+- Memory growth over time
+- Most-queried memories (from MCP tool usage)

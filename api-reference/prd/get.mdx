@@ -1,0 +1,32 @@
+---
+title: "Get PRD"
+description: "Retrieve a specific PRD generation."
+api: "GET /v1/projects/{projectId}/prd/{prdId}"
+---
+
+<ParamField path="projectId" type="string" required>Project UUID.</ParamField>
+<ParamField path="prdId" type="string" required>PRD UUID.</ParamField>
+
+<CodeGroup>
+```bash Request
+curl https://api.getkommit.ai/v1/projects/a1b2c3d4-e5f6-7890-abcd-ef1234567890/prd/prd_a1b2c3d4 \
+  -H "Authorization: Bearer km_your_api_key"
+```
+
+```json Response
+{
+  "id": "prd_a1b2c3d4",
+  "version": 2,
+  "markdownContent": "# Mobile App Redesign\n\n## Overview\nA complete redesign of the iOS and Android mobile applications...\n\n## Requirements\n...",
+  "jsonContent": {
+    "sections": [
+      { "title": "Overview", "content": "..." },
+      { "title": "Requirements", "content": "..." }
+    ]
+  },
+  "nodeSnapshot": [...],
+  "tokenUsage": { "input": 3200, "output": 4800 },
+  "createdAt": "2025-03-20T14:00:00Z"
+}
+```
+</CodeGroup>
