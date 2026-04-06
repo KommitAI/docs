@@ -1,0 +1,49 @@
+---
+title: "Importing projects"
+description: "Migrate your existing code, designs, and data into Kommit from GitHub, GitLab, Bitbucket, and other platforms."
+---
+
+Kommit can import projects from a variety of sources. During import, Kommit analyzes your codebase to automatically detect your tech stack, database schema, features, and project structure — giving you a structured spec from day one.
+
+## Supported sources
+
+| Source | Method | What's analyzed |
+|--------|--------|----------------|
+| [GitHub](/docs/features/importing/github) | Connect account or paste URL | Code, tech stack, DB schema, features |
+| [GitLab](/docs/features/importing/gitlab) | Paste repository URL | Code, tech stack, DB schema, features |
+| [Bitbucket](/docs/features/importing/bitbucket) | Paste repository URL | Code, tech stack, DB schema, features |
+| [Lovable](/docs/features/importing/lovable) | Connect via GitHub | Code, design, DB schema |
+| [Bolt](/docs/features/importing/bolt) | Zip upload or GitHub | Code, design, backend |
+| [Base44](/docs/features/importing/base44) | Connect via GitHub | Code, design |
+| [Vercel](/docs/features/importing/vercel) | Connect via GitHub | Code, design, backend, DB schema |
+| [Figma](/docs/features/importing/figma) | Paste Figma file URL | Screens, component structure |
+| [Zip file](/docs/features/importing/zip) | Upload `.zip` | Code, design, tech stack, DB schema |
+
+## How it works
+
+1. **Select a source** — Choose where your project lives
+2. **Connect or paste** — Either connect your account (GitHub) or paste a URL
+3. **Configure** — Name your project and set visibility (public or private)
+4. **Import** — Kommit clones and analyzes your code in the background
+
+Once complete, you'll have a fully structured project with auto-detected nodes for tech stack, features, and database schema on your canvas.
+
+## Project visibility
+
+When creating a project during import, you can choose:
+
+- **Private** (default) — Only workspace members can access the project
+- **Public** — Anyone with the link can view the project (useful for sharing specs with contractors or stakeholders)
+
+You can change visibility later from project settings.
+
+## What Kommit analyzes
+
+During import, Kommit examines your codebase to extract:
+
+- **Tech stack** — Detected from `package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, `Gemfile`, `composer.json`, and other manifest files
+- **Database schema** — Parsed from Prisma schemas, Drizzle configs, and SQL migration files
+- **Features** — Inferred from route handlers, components, and module structure
+- **Code structure** — File organization, dependencies, and architecture patterns
+
+All extracted data populates your canvas as structured nodes that you can refine with AI-guided conversations.

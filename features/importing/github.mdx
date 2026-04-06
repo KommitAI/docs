@@ -1,0 +1,48 @@
+---
+title: "Import from GitHub"
+description: "Import repositories from GitHub into Kommit for automatic code analysis and spec generation."
+---
+
+## Prerequisites
+
+- A GitHub account with access to the repositories you want to import
+- The [Kommit GitHub App](https://github.com/apps/kommit-ai) installed on your account or organization
+
+## Steps
+
+1. Go to **Import** in the sidebar and select **GitHub**
+2. If you haven't connected GitHub yet, click **Connect your GitHub account** and install the Kommit GitHub App
+3. Browse your repositories and select up to 10 to import
+4. Name your project and set the visibility (public or private)
+5. Click **Start Import**
+
+Kommit will clone your repositories and analyze the code in the background. You'll be redirected to your dashboard where you can track the import progress.
+
+## What gets analyzed
+
+- **Code** — Full source tree is cloned and indexed
+- **Tech stack** — Auto-detected from package manifests (`package.json`, `requirements.txt`, etc.)
+- **Database schema** — Parsed from ORM configs (Prisma, Drizzle) and SQL migrations
+- **Features** — Inferred from routes, components, and module structure
+
+## Multi-repo projects
+
+You can select multiple repositories for a single project. Kommit will:
+
+1. Import the primary repository first (ranked by language and visibility)
+2. Connect additional repositories as separate nodes on your canvas
+3. Run synthesis to identify cross-repo relationships
+
+## FAQ
+
+<AccordionGroup>
+  <Accordion title="Why can't I see my repositories?">
+    Make sure you've installed the Kommit GitHub App on the account or organization that owns the repositories. You can manage installations from **Settings > Integrations**.
+  </Accordion>
+  <Accordion title="Can I import private repositories?">
+    Yes. The Kommit GitHub App requests read-only access to your repository contents. Your code is analyzed server-side and never stored beyond the generated spec.
+  </Accordion>
+  <Accordion title="How long does import take?">
+    Most repositories complete within 1-3 minutes. Very large repositories with extensive history may take longer.
+  </Accordion>
+</AccordionGroup>

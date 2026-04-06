@@ -28,8 +28,23 @@
               "features/canvas",
               "features/memory",
               "features/prd-generation",
+              "features/importing",
               "features/integrations",
               "features/feedback-portal"
+            ]
+          },
+          {
+            "group": "Importing",
+            "pages": [
+              "features/importing/github",
+              "features/importing/gitlab",
+              "features/importing/bitbucket",
+              "features/importing/lovable",
+              "features/importing/bolt",
+              "features/importing/base44",
+              "features/importing/vercel",
+              "features/importing/figma",
+              "features/importing/zip"
             ]
           },
           {

@@ -1,0 +1,21 @@
+---
+title: "Import from Bitbucket"
+description: "Import Bitbucket repositories into Kommit by pasting a repository URL."
+---
+
+## Steps
+
+1. Go to **Import** in the sidebar and select **Bitbucket**
+2. Paste your Bitbucket repository URL (e.g., `https://bitbucket.org/workspace/project`)
+3. Click **Import**
+
+<Note>
+  Bitbucket import currently supports public repositories via URL. OAuth-based account connection for private repositories is coming soon.
+</Note>
+
+## What gets analyzed
+
+- **Code** — Full source tree is cloned and indexed
+- **Tech stack** — Auto-detected from package manifests
+- **Database schema** — Parsed from ORM configs and SQL migrations
+- **Features** — Inferred from routes and module structure

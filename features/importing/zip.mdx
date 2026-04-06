@@ -1,0 +1,33 @@
+---
+title: "Import from Zip"
+description: "Upload a .zip file of your project to import it into Kommit."
+---
+
+Upload a compressed archive of your project when you can't connect via Git. This works for any codebase regardless of where it's hosted.
+
+## Steps
+
+1. Compress your project folder into a `.zip` file
+2. Go to **Import** in the sidebar and select **Zip file**
+3. Drag and drop or click to upload your `.zip` file (max 100MB)
+4. Name your project and click **Start Import**
+
+## What gets analyzed
+
+- **Code** — All source files in the archive
+- **Design and styles** — CSS, Tailwind, component styling
+- **Tech stack** — Detected from package manifests
+- **Database schema** — ORM configs and migration files
+
+## What to exclude
+
+Before creating your zip, remove these directories to keep the upload small:
+
+- `node_modules/` — Dependencies (will be detected from `package.json`)
+- `.git/` — Git history
+- `dist/`, `build/`, `.next/` — Build artifacts
+- `.env` files — Secrets and credentials (never upload these)
+
+<Warning>
+  Do not include secrets, API keys, or `.env` files in your zip upload. Kommit does not need them and they should never leave your local environment.
+</Warning>
