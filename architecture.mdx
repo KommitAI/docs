@@ -1,0 +1,147 @@
+---
+title: "Architecture overview"
+description: "How Kommit's services fit together — API, frontend, workers, parser, and data stores."
+---
+
+Kommit is a multi-service TypeScript platform. Each service has a clear responsibility and communicates through well-defined boundaries.
+
+## Service topology
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                        Clients                              │
+│  Browser (Next.js)  ·  MCP tools  ·  REST API consumers    │
+└──────────┬──────────────────┬──────────────────┬────────────┘
+           │                  │                  │
+           ▼                  ▼                  ▼
+┌─────────────────┐  ┌──────────────┐  ┌─────────────────────┐
+│ kommit-frontend  │  │  MCP server  │  │     kommit-api      │
+│ Next.js 16       │  │  (SSE)       │  │     Hono 4          │
+│ Port 3000        │  │              │  │     Port 3319       │
+└────────┬─────────┘  └──────┬───────┘  └──────┬──────────────┘
+         │                   │                  │
+         │                   ▼                  │
+         │          ┌────────────────┐          │
+         └─────────►│  PostgreSQL 16 │◄─────────┘
+                    │  + pgvector    │
+                    └───────┬────────┘
+                            │
+           ┌────────────────┼────────────────┐
+           │                │                │
+           ▼                ▼                ▼
+   ┌──────────────┐ ┌─────────────┐ ┌──────────────┐
+   │    Redis      │ │ kommit-     │ │ kommit-      │
+   │  (BullMQ)    │ │ worker      │ │ parser       │
+   │              │ │ Port 4200   │ │ Port 4100    │
+   └──────────────┘ └─────────────┘ └──────────────┘
+```
+
+## Services
+
+<AccordionGroup>
+  <Accordion title="kommit-api — REST API server">
+    **Framework:** Hono 4 (lightweight, TypeScript-first)
+    **Port:** 3319
+    **Responsibilities:**
+    - Project, node, edge, and memory CRUD
+    - PRD generation and refinement (streaming via SSE)
+    - Chat endpoints with AI models (Anthropic Claude, OpenAI)
+    - Authentication via Better Auth (session cookies + API keys)
+    - Template and invite management
+    - Job queue submission to BullMQ
+
+    **Middleware stack:** request ID → structured logging → CORS → Prometheus metrics → rate limiting (global 1 000 req/min; stricter per-route limits on auth, chat, and PRD endpoints).
+
+    **Error handling:** Zod schema validation on all inputs. Global handler catches `HTTPException`, `ZodError`, and generic errors. Sentry integration for production error tracking.
+  </Accordion>
+
+  <Accordion title="kommit-frontend — web application">
+    **Framework:** Next.js 16 with App Router, React 19
+    **Port:** 3000
+    **Responsibilities:**
+    - Dashboard, project canvas editor, memory browser
+    - PRD generation and refinement UI
+    - Import wizards (GitHub, GitLab, Bitbucket, Figma, Vercel, ZIP, and more)
+    - Admin panel (user management, audit logs, feature requests, roadmap)
+    - Marketing pages, blog, and embedded documentation
+
+    **Key libraries:** Tailwind CSS 4, shadcn/ui, Zustand (state), SWR (data fetching), XYFlow (canvas), Motion (animations), PostHog (analytics).
+  </Accordion>
+
+  <Accordion title="kommit-worker — background job processor">
+    **Framework:** BullMQ on Redis
+    **Port:** 4200 (health/metrics)
+    **Queue name:** `repo`
+    **Concurrency:** configurable (default 5)
+
+    | Job type | Purpose |
+    |----------|---------|
+    | `repo.sync` | Sync with GitHub repositories |
+    | `repo.analyze` | Code analysis and semantic indexing |
+    | `repo.import` | Repository import/ingestion |
+    | `zip.import` | ZIP file import and processing |
+
+    Failed jobs go to a Dead Letter Queue with optional Slack notifications. Completed jobs are retained for 24 hours; failed jobs for 7 days.
+  </Accordion>
+
+  <Accordion title="kommit-parser — code analysis service">
+    **Framework:** Express 5
+    **Port:** 4100
+    **Responsibilities:**
+    - Language detection across 50+ languages
+    - AST generation via Tree-sitter
+    - Code tokenization and processing
+
+    Called by `kommit-worker` during repository analysis jobs.
+  </Accordion>
+</AccordionGroup>
+
+## Data stores
+
+| Store | Technology | Purpose |
+|-------|-----------|---------|
+| **Primary database** | PostgreSQL 16 + pgvector | Projects, nodes, edges, users, orgs, billing, audit logs |
+| **Vector embeddings** | pgvector (1 536 dimensions) | Semantic memory search |
+| **Job queue & cache** | Redis | BullMQ job queue, session cache |
+
+Row-level security (RLS) enforces multi-tenant data isolation at the database level. Each organization's data is invisible to other tenants.
+
+## Data flow
+
+<Steps>
+  <Step title="User creates a project">
+    The frontend sends requests to `kommit-api`. The API validates inputs with Zod, persists to PostgreSQL via Drizzle ORM, and returns the created project.
+  </Step>
+
+  <Step title="User imports a repository">
+    The API enqueues a `repo.import` job to BullMQ (Redis). The worker picks up the job, clones the repo, and calls `kommit-parser` for code analysis. Results are written back to PostgreSQL.
+  </Step>
+
+  <Step title="Memory is stored">
+    When a memory is created, the API generates a vector embedding (1 536 dimensions) and stores it in PostgreSQL via pgvector. Conflict detection runs automatically against existing memories.
+  </Step>
+
+  <Step title="AI tools query via MCP">
+    AI coding tools (Claude Code, Cursor, Windsurf) connect to the MCP server over SSE. The MCP server authenticates with an API key, queries PostgreSQL for project specs and memory, and streams results back.
+  </Step>
+</Steps>
+
+## External integrations
+
+| Service | Purpose |
+|---------|---------|
+| **GitHub** | Repository sync, webhooks, OAuth, GitHub App |
+| **Anthropic Claude** | AI-powered chat, PRD generation |
+| **OpenAI** | Alternative LLM provider |
+| **Resend** | Transactional email |
+| **Stripe** | Billing and subscriptions |
+| **Sentry** | Error tracking (all services) |
+| **PostHog** | Product analytics (frontend) |
+
+## Observability
+
+Every service exposes:
+- `GET /health` — liveness check with database connectivity
+- `GET /metrics` — Prometheus-format metrics
+
+Key metrics from the worker: `jobs_processed_total` (by job name and status), `job_duration_seconds` (histogram), `active_jobs` (gauge).

@@ -1,0 +1,249 @@
+---
+title: "Environment setup"
+description: "Set up a local development environment for Kommit from scratch."
+---
+
+## Prerequisites
+
+| Tool | Version | Purpose |
+|------|---------|---------|
+| **Node.js** | 20+ | Runtime for all services |
+| **pnpm** | 9+ | Package manager |
+| **Docker** | 24+ | PostgreSQL and Redis containers |
+| **Git** | 2.40+ | Source control |
+
+## 1. Clone the repository
+
+```bash
+git clone https://github.com/KommitAI/kommit.git
+cd kommit
+```
+
+## 2. Start the database
+
+Kommit uses PostgreSQL 16 with the pgvector extension for vector embeddings.
+
+```bash
+cd kommit-frontend
+docker-compose up -d
+```
+
+This starts PostgreSQL on port `5433` with:
+- **User:** `kommit`
+- **Password:** `kommit_dev`
+- **Database:** `kommit`
+- **pgvector** extension pre-installed
+
+Verify it's running:
+
+```bash
+docker ps
+# Should show pgvector/pgvector:pg16 container
+```
+
+## 3. Start Redis
+
+The worker service requires Redis for job queues.
+
+```bash
+# If Redis is not already running locally:
+docker run -d --name kommit-redis -p 6379:6379 redis:7-alpine
+```
+
+## 4. Configure environment variables
+
+Each service needs its own `.env` file. Copy the examples and fill in the required values.
+
+<Tabs>
+  <Tab title="kommit-api">
+    ```bash
+    cd kommit-api
+    cp .env.example .env
+    ```
+
+    **Required variables:**
+
+    ```bash
+    # Database
+    DATABASE_URL=postgres://kommit:kommit_dev@localhost:5433/kommit
+    DATABASE_APP_URL=postgres://kommit_app:kommit_app_dev@localhost:5433/kommit
+
+    # Auth
+    BETTER_AUTH_SECRET=change-me-to-random-64-char-string
+    BETTER_AUTH_URL=http://localhost:3319
+
+    # Server
+    PORT=3319
+    NODE_ENV=development
+    ```
+
+    **Optional (enable AI features):**
+
+    ```bash
+    ANTHROPIC_API_KEY=sk-ant-...
+    OPENAI_API_KEY=sk-...
+    RESEND_API_KEY=re_...
+    ```
+  </Tab>
+
+  <Tab title="kommit-frontend">
+    ```bash
+    cd kommit-frontend
+    cp .env.example .env
+    ```
+
+    **Required variables:**
+
+    ```bash
+    DATABASE_URL=postgres://kommit:kommit_dev@localhost:5433/kommit
+    DATABASE_APP_URL=postgres://kommit_app:kommit_app_dev@localhost:5433/kommit
+    BETTER_AUTH_SECRET=change-me-to-random-64-char-string
+    BETTER_AUTH_URL=http://localhost:3000
+    NEXT_PUBLIC_APP_URL=http://localhost:3000
+    ```
+
+    <Note>
+      `BETTER_AUTH_SECRET` must be the same value across all services that use Better Auth.
+    </Note>
+  </Tab>
+
+  <Tab title="kommit-worker">
+    The worker reads from environment or defaults:
+
+    ```bash
+    REDIS_HOST=127.0.0.1
+    REDIS_PORT=6379
+    HEALTH_PORT=4200
+    WORKER_CONCURRENCY=5
+    ```
+  </Tab>
+
+  <Tab title="kommit-parser">
+    ```bash
+    PORT=4100
+    NODE_ENV=development
+    ```
+  </Tab>
+</Tabs>
+
+## 5. Install dependencies
+
+From the repository root:
+
+```bash
+pnpm install
+```
+
+This installs dependencies for all services in the monorepo.
+
+## 6. Set up the database schema
+
+```bash
+cd kommit-api
+pnpm db:push
+```
+
+This uses Drizzle ORM to push the schema to PostgreSQL. If you need to reset the database, drop and recreate it first:
+
+```bash
+docker exec -it <postgres-container> psql -U kommit -d kommit -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public; CREATE EXTENSION IF NOT EXISTS vector;"
+pnpm db:push
+```
+
+## 7. Start the services
+
+Open four terminal windows (or use a tool like `tmux`):
+
+<CodeGroup>
+```bash Terminal 1 — API
+cd kommit-api
+pnpm dev
+# → http://localhost:3319
+```
+
+```bash Terminal 2 — Frontend
+cd kommit-frontend
+pnpm dev
+# → http://localhost:3000
+```
+
+```bash Terminal 3 — Worker
+cd kommit-worker
+pnpm dev
+# → Health at http://localhost:4200/health
+```
+
+```bash Terminal 4 — Parser
+cd kommit-parser
+pnpm dev
+# → http://localhost:4100
+```
+</CodeGroup>
+
+## 8. Verify everything works
+
+<Steps>
+  <Step title="Check the API">
+    ```bash
+    curl http://localhost:3319/health
+    # Should return 200 with database status
+    ```
+  </Step>
+
+  <Step title="Open the frontend">
+    Navigate to [http://localhost:3000](http://localhost:3000) and create an account.
+  </Step>
+
+  <Step title="Check the worker">
+    ```bash
+    curl http://localhost:4200/health
+    # Should return 200
+    ```
+  </Step>
+
+  <Step title="Check the parser">
+    ```bash
+    curl http://localhost:4100/health
+    # Should return 200
+    ```
+  </Step>
+</Steps>
+
+## Service ports summary
+
+| Service | Port | Health endpoint |
+|---------|------|-----------------|
+| kommit-frontend | 3000 | — |
+| kommit-api | 3319 | `/health` |
+| kommit-parser | 4100 | `/health` |
+| kommit-worker | 4200 | `/health` |
+| PostgreSQL | 5433 | — |
+| Redis | 6379 | — |
+
+## Optional: GitHub App integration
+
+To enable GitHub repository imports and webhooks, configure a GitHub App:
+
+1. Create a GitHub App at [github.com/settings/apps/new](https://github.com/settings/apps/new)
+2. Set the webhook URL to your API's public URL
+3. Grant repository read permissions
+4. Add these to your `.env` files:
+
+```bash
+GITHUB_CLIENT_ID=your-app-client-id
+GITHUB_CLIENT_SECRET=your-app-client-secret
+GITHUB_APP_ID=your-app-id
+GITHUB_APP_PRIVATE_KEY=your-app-private-key
+GITHUB_APP_WEBHOOK_SECRET=your-webhook-secret
+```
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Architecture overview" icon="sitemap" href="/architecture">
+    Understand how Kommit's services fit together.
+  </Card>
+  <Card title="API reference" icon="code" href="/api-reference/introduction">
+    Explore the REST API endpoints.
+  </Card>
+</Columns>

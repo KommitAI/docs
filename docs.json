@@ -19,7 +19,10 @@
             "pages": [
               "index",
               "quickstart",
-              "concepts"
+              "concepts",
+              "architecture",
+              "environment-setup",
+              "troubleshooting"
             ]
           },
           {
