@@ -1,0 +1,184 @@
+---
+title: "Troubleshooting"
+description: "Common issues and how to resolve them when running or deploying Kommit."
+---
+
+## API connection issues
+
+<AccordionGroup>
+  <Accordion title="Cannot connect to the API (ECONNREFUSED)">
+    **Symptoms:** Requests to `localhost:3319` fail with `ECONNREFUSED`.
+
+    **Checks:**
+    1. Verify the API is running: `curl http://localhost:3319/health`
+    2. Check the port isn't taken: `lsof -i :3319`
+    3. Confirm `PORT` is set correctly in your `.env` (default `3319`)
+    4. Review logs for startup errors — the API will fail to start if it cannot reach PostgreSQL
+  </Accordion>
+
+  <Accordion title="Health check returns database error">
+    **Symptoms:** `GET /health` returns `503` with a database connection error.
+
+    **Checks:**
+    1. Verify PostgreSQL is running: `docker ps` (look for the pgvector container)
+    2. Check `DATABASE_URL` in your `.env` matches the running database
+    3. Default Docker URL: `postgres://kommit:kommit_dev@localhost:5433/kommit`
+    4. If the port changed, update both `DATABASE_URL` and `DATABASE_APP_URL`
+    5. Confirm the pgvector extension is installed: `SELECT * FROM pg_extension WHERE extname = 'vector';`
+  </Accordion>
+
+  <Accordion title="401 Unauthorized on API requests">
+    **Checks:**
+    1. Session-based auth: ensure your browser has a valid session cookie from `/auth`
+    2. API-key auth: verify the key starts with `km_` and is sent in the `Authorization: Bearer` header
+    3. Keys are scoped to an organization — make sure you're accessing the correct org's resources
+  </Accordion>
+
+  <Accordion title="429 Too Many Requests">
+    The API applies rate limits per route:
+
+    | Route group | Limit |
+    |------------|-------|
+    | Global | 1 000 req/min |
+    | Auth | 20 req/min |
+    | Invites | 30 req/min |
+    | Chat | 60 req/min |
+    | PRD | 30 req/min |
+
+    Back off and retry with exponential backoff. If you consistently hit global limits, check for runaway polling loops in your client.
+  </Accordion>
+</AccordionGroup>
+
+## Database issues
+
+<AccordionGroup>
+  <Accordion title="Docker container fails to start (port conflict)">
+    **Symptoms:** `docker-compose up` fails because port `5433` is already in use.
+
+    **Fix:**
+    ```bash
+    # Find what's using the port
+    lsof -i :5433
+
+    # Option 1: stop the conflicting process
+    # Option 2: change the port in docker-compose.yml
+    ```
+  </Accordion>
+
+  <Accordion title="Migrations fail or schema is outdated">
+    **Symptoms:** API throws errors about missing columns or tables.
+
+    **Fix:**
+    ```bash
+    cd kommit-api
+    pnpm db:push    # Push schema to database
+    ```
+
+    If `db:push` fails, check that `DATABASE_URL` points to a running PostgreSQL instance with the pgvector extension enabled.
+  </Accordion>
+
+  <Accordion title="Vector search returns no results">
+    **Checks:**
+    1. Verify pgvector extension is installed: run `CREATE EXTENSION IF NOT EXISTS vector;` in psql
+    2. Check that memories have been embedded — the `embeddings` table should contain rows
+    3. If using a fresh database, create a memory first and confirm the embedding was generated
+  </Accordion>
+</AccordionGroup>
+
+## Worker and job issues
+
+<AccordionGroup>
+  <Accordion title="Jobs stuck in 'waiting' state">
+    **Checks:**
+    1. Verify Redis is running: `redis-cli ping` should return `PONG`
+    2. Confirm the worker is running and connected: check `localhost:4200/health`
+    3. Look for worker logs — connection errors to Redis will prevent job pickup
+    4. Check `REDIS_HOST` and `REDIS_PORT` in your environment
+  </Accordion>
+
+  <Accordion title="Repository import fails">
+    **Checks:**
+    1. Worker logs will show the specific error — check for Git clone failures (auth, network)
+    2. For GitHub imports, verify `GITHUB_APP_ID` and `GITHUB_APP_PRIVATE_KEY` are set
+    3. For large repos, the worker may time out — check for memory issues in Docker
+    4. The parser service must be running on port `4100` for code analysis
+  </Accordion>
+
+  <Accordion title="Dead Letter Queue filling up">
+    Failed jobs retry automatically. If they exhaust retries, they move to the DLQ.
+
+    **Checks:**
+    1. Review the failed job's error message in worker logs
+    2. If `SLACK_WEBHOOK_URL` is set, DLQ entries post to Slack automatically
+    3. Common causes: parser service down, database connection pool exhausted, external API errors
+  </Accordion>
+</AccordionGroup>
+
+## MCP connection issues
+
+<AccordionGroup>
+  <Accordion title="AI tool cannot connect to Kommit MCP">
+    **Checks:**
+    1. Verify your MCP config uses the correct URL: `https://mcp.getkommit.ai/sse?token=km_your_api_key`
+    2. Test the token: `curl -H "Authorization: Bearer km_your_api_key" https://api.getkommit.ai/v1/projects`
+    3. Check that your AI tool supports SSE-based MCP servers
+    4. In Claude Code, check `~/.claude/settings.json` for syntax errors
+  </Accordion>
+
+  <Accordion title="MCP returns empty results">
+    **Checks:**
+    1. Your API key is scoped to an organization — verify the project belongs to that org
+    2. Check that the project has nodes and/or memories — empty projects return empty results
+    3. For memory search, ensure memories have been embedded (they are embedded on creation)
+  </Accordion>
+</AccordionGroup>
+
+## Frontend issues
+
+<AccordionGroup>
+  <Accordion title="Blank page or hydration errors">
+    **Checks:**
+    1. Open browser DevTools and check the Console for errors
+    2. Verify the API is reachable from the browser (check `NEXT_PUBLIC_APP_URL`)
+    3. Clear the browser cache and local storage
+    4. Restart the dev server: `pnpm -C kommit-frontend dev`
+  </Accordion>
+
+  <Accordion title="Canvas not rendering or nodes missing">
+    **Checks:**
+    1. Check the Network tab for failed API calls to `/v1/projects/:id/nodes`
+    2. Verify the project exists and has nodes
+    3. Try a hard refresh (`Cmd+Shift+R` / `Ctrl+Shift+R`)
+  </Accordion>
+</AccordionGroup>
+
+## Deployment issues
+
+<AccordionGroup>
+  <Accordion title="Environment variables missing in production">
+    Required variables for each service:
+
+    | Service | Required |
+    |---------|----------|
+    | **kommit-api** | `DATABASE_URL`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` |
+    | **kommit-frontend** | `DATABASE_URL`, `BETTER_AUTH_SECRET`, `NEXT_PUBLIC_APP_URL` |
+    | **kommit-worker** | `REDIS_HOST`, `REDIS_PORT`, `DATABASE_URL` |
+    | **kommit-parser** | `PORT` (default 4100) |
+
+    Missing secrets cause silent failures — check service logs for `undefined` variable warnings.
+  </Accordion>
+
+  <Accordion title="CORS errors in production">
+    The API handles CORS via middleware. If you see CORS errors:
+    1. Verify the frontend's origin is allowed in the API's CORS configuration
+    2. Check that `BETTER_AUTH_URL` matches the actual API URL
+    3. Ensure requests include the correct `Origin` header
+  </Accordion>
+</AccordionGroup>
+
+## Still stuck?
+
+Reach out to [support@getkommit.ai](mailto:support@getkommit.ai) with:
+- The service and endpoint involved
+- The full error message or HTTP status code
+- Your environment (local dev, staging, production)
