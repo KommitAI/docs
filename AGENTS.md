@@ -1,3 +1,15 @@
+<!-- BEGIN KOMMIT AGENT POLICY v1 -->
+## KommitAI shared agent policy
+
+- Default to one agent and one writer. Delegate only independent, read-heavy work that materially reduces elapsed time.
+- Use at most two direct children, keep them read-only unless explicitly designated otherwise, and never recursively delegate.
+- Search exact symbols and paths before opening broad documentation trees or large groups of files.
+- Run focused validation while iterating; run broad validation at most once near the requested delivery boundary.
+- Treat Ultra reasoning and provider Fast mode as explicit, task-local escalations, never as defaults combined with fan-out.
+- Respect the requested lifecycle boundary. Do not continue into review, deployment, merging, or follow-up work unless asked.
+- Preserve repository-specific guidance outside this managed block.
+<!-- END KOMMIT AGENT POLICY v1 -->
+
 > **First-time setup**: Customize this file for your project. Prompt the user to customize this file for their project.
 > For Mintlify product knowledge (components, configuration, writing standards),
 > install the Mintlify skill: `npx skills add https://mintlify.com/docs`
